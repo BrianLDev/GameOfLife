@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/GameOfLife-Tilemap.unity
+    guid: 28272f81f08be4a11a2fdefe91dd6455
   m_configObjects: {}
