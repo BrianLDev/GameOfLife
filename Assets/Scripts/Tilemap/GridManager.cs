@@ -8,7 +8,9 @@ public class GridManager : MonoBehaviour {
   public GridLayout grid;
   public Tilemap tilemap;
   public TmapTile smartTile;
-  private int gridWidth, gridHeight;
+  private int gridWidth = 2;
+  private int gridHeight = 2;
+  private float targetFOV = 65;
 
   private void Awake() {
     if(!mainCamera)
@@ -25,25 +27,49 @@ public class GridManager : MonoBehaviour {
     Debug.Log("Size = " + tilemap.size);
   }
 
+  private void Update() {
+    if ((mainCamera.fieldOfView <= targetFOV*.95) || (mainCamera.fieldOfView >= targetFOV*1.05)) {
+      mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, targetFOV, Time.deltaTime*2);
+    }
+  }
+
   public void SetWidth(int width) {
-    gridWidth = width+1;
+    gridWidth = width+2;
   }
 
   public void SetHeight(int height) {
-    gridHeight = height+1;
+    gridHeight = height+2;
   }
 
   public void CreateGrid() {
-    ResetGrid();
+    ClearGrid();
     Debug.Log("Creating a " + gridWidth + " x " + gridHeight + " grid.");
     tilemap.size = new Vector3Int(gridWidth, gridHeight, 1);
     tilemap.origin = new Vector3Int(-gridWidth/2, -gridHeight/2, 1);
     tilemap.FloodFill(tilemap.origin, smartTile);
+    SetCameraFOV();
+  }
+
+  public void ClearGrid() {
+    Debug.Log("Clearing grid...");
+    tilemap.ClearAllTiles();
+    tilemap.origin = Vector3Int.zero;
   }
 
   public void ResetGrid() {
-    Debug.Log("Resetting grid");
-    tilemap.ClearAllTiles();
-    tilemap.origin = Vector3Int.zero;
+    Debug.Log("Resetting grid...");
+    ClearGrid();
+    gridWidth = 2;
+    gridHeight = 2;
+    SetCameraFOV();
+  }
+
+  private void SetCameraFOV() {
+    if(gridWidth <= 15 && gridHeight <= 10)
+      targetFOV = 65;
+    else if(gridWidth <= 30 && gridHeight <= 20)
+      targetFOV = 95;
+    else if(gridWidth <= 60 && gridHeight <= 40)
+      targetFOV = 125;
   }
 }
