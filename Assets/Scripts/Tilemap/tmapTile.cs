@@ -14,13 +14,9 @@ public class TmapTile : Tile {
         // This is called anytime a Tile is added in Unity Editor or in game
 
         int i = Random.Range(1, 100);
-        if (i < 33) {
+        if (i < 90) {
             state = TileState.Empty;
             tileData.sprite = spriteEmpty;
-        }
-        else if (i < 66) {
-            state = TileState.Outline;
-            tileData.sprite = spriteOutline;
         }
         else {
             state = TileState.Alive;
