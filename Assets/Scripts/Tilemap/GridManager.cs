@@ -1,5 +1,4 @@
-﻿using System; // for .MemberwiseClone
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -10,6 +9,7 @@ public class GridManager : MonoBehaviour {
   public Tilemap tilemap;
   public Tile tileEmpty, tileSelected, tileAlive;
   // public TmapTile smartTile;   // not used in this version.  Keep for possible future use
+  private TileBase[] tileArray;
   private Tilemap initialTilemap;
   private int gridWidth = 5;
   private int gridHeight = 5;
@@ -25,13 +25,22 @@ public class GridManager : MonoBehaviour {
   }
 
   private void Start() {
-    Debug.Log("Size = " + tilemap.size);
     SaveGridState();
+    SetCameraFOV();
   }
 
   private void Update() {
     if ((mainCamera.fieldOfView <= targetFOV*.995) || (mainCamera.fieldOfView >= targetFOV*1.005)) {
       mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, targetFOV, Time.deltaTime*3.5f);
+    }
+  }
+
+  public void Simulate(int generations=1) {
+    tileArray = tilemap.GetTilesBlock(tilemap.cellBounds);
+    foreach (TileBase tile in tileArray) {
+      if(Random.Range(1,100)>50) {
+        
+      }
     }
   }
 
@@ -51,6 +60,7 @@ public class GridManager : MonoBehaviour {
       gridHeight = (heightIndex-17)*50; // increments of 50 from 150 to 500 (index 20 to 27)
   }
 
+
   public void CreateGridLayout() {
     ClearGrid();
     Debug.Log("Creating a " + gridWidth + " x " + gridHeight + " grid.");
@@ -63,14 +73,19 @@ public class GridManager : MonoBehaviour {
   public void ClearGrid() {
     Debug.Log("Clearing grid...");
     tilemap.ClearAllTiles();
-    tilemap.origin = Vector3Int.zero;
-    SetCameraFOV();
   }
 
   public void ResetGrid() {
     Debug.Log("Resetting grid to previous state...");
     RestoreGridState();
     SetCameraFOV();
+  }
+
+  public void RecalculateGridBounds() {
+    // tilemap.CompressBounds(); 
+    tilemap.ResizeBounds();
+    gridWidth = tilemap.size[0];
+    gridHeight = tilemap.size[1];
   }
 
   public void SaveGridState() {
@@ -97,6 +112,8 @@ public class GridManager : MonoBehaviour {
 
   private void SetCameraFOV() {
     // TODO: Automate this if possible and if there's time.  For now, it works. 
+    RecalculateGridBounds();
+
     if(gridWidth <= 20 && gridHeight <= 10)
       targetFOV = 65;
     else if(gridWidth <= 30 && gridHeight <= 20)
