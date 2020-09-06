@@ -159,7 +159,7 @@ Grid:
   m_GameObject: {fileID: 888299263}
   m_Enabled: 1
   m_CellSize: {x: 1, y: 1, z: 0}
-  m_CellGap: {x: 0, y: 0, z: 0}
+  m_CellGap: {x: 0.05, y: 0.05, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
 --- !u!4 &888299265
@@ -2729,56 +2729,16 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 126451190}
-    - target: {fileID: 545101879580094209, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -34.149414
-      objectReference: {fileID: 0}
-    - target: {fileID: 3283249453638432122, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -140
-      objectReference: {fileID: 0}
     - target: {fileID: 3283249453638432123, guid: 881bc153615424453b1f5cb3b8045b42,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 126451190}
-    - target: {fileID: 3283249453638432123, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: CreateGridLayout
-      objectReference: {fileID: 0}
     - target: {fileID: 4340505468663950966, guid: 881bc153615424453b1f5cb3b8045b42,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1237586800}
-    - target: {fileID: 4340505468663950966, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StartSim
-      objectReference: {fileID: 0}
-    - target: {fileID: 4340505468663950966, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_Colors.m_SelectedColor.r
-      value: 0.4156863
-      objectReference: {fileID: 0}
-    - target: {fileID: 4340505468663950966, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_Colors.m_SelectedColor.g
-      value: 0.7843138
-      objectReference: {fileID: 0}
-    - target: {fileID: 4340505468663950966, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_Colors.m_SelectedColor.b
-      value: 0.42352945
-      objectReference: {fileID: 0}
-    - target: {fileID: 4789416161692399324, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -79.149414
-      objectReference: {fileID: 0}
     - target: {fileID: 4789416161692399325, guid: 881bc153615424453b1f5cb3b8045b42,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -2789,36 +2749,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 126451190}
-    - target: {fileID: 5799401249307305946, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ResetGrid
-      objectReference: {fileID: 0}
-    - target: {fileID: 5799401249307305946, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_Colors.m_SelectedColor.r
-      value: 0.8313726
-      objectReference: {fileID: 0}
-    - target: {fileID: 5799401249307305946, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_Colors.m_SelectedColor.g
-      value: 0.5058824
-      objectReference: {fileID: 0}
-    - target: {fileID: 5799401249307305946, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_Colors.m_SelectedColor.b
-      value: 0.5058824
-      objectReference: {fileID: 0}
     - target: {fileID: 8860021704560943315, guid: 881bc153615424453b1f5cb3b8045b42,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1237586800}
-    - target: {fileID: 8860021704560943315, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Randomize
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 881bc153615424453b1f5cb3b8045b42, type: 3}
 --- !u!1001 &2107620875339079809
@@ -2962,11 +2897,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4327725167387440361, guid: b3d0a133987ca4bc98a0e18215d94e4f,
-        type: 3}
-      propertyPath: field of view
-      value: 65
-      objectReference: {fileID: 0}
     - target: {fileID: 4327725167387440363, guid: b3d0a133987ca4bc98a0e18215d94e4f,
         type: 3}
       propertyPath: m_Name
@@ -3056,23 +2986,5 @@ PrefabInstance:
       propertyPath: tilemap
       value: 
       objectReference: {fileID: 2098200161}
-    - target: {fileID: 5806534428861530163, guid: a2a0bb30edd20441c8cea27be765d478,
-        type: 3}
-      propertyPath: tileEmpty
-      value: 
-      objectReference: {fileID: 11400000, guid: 9ad97b64a5cf742faadc2eb1e23af164,
-        type: 2}
-    - target: {fileID: 5806534428861530163, guid: a2a0bb30edd20441c8cea27be765d478,
-        type: 3}
-      propertyPath: tileSelected
-      value: 
-      objectReference: {fileID: 11400000, guid: cb5027ac0561341a4b73c47e3b1f8e40,
-        type: 2}
-    - target: {fileID: 5806534428861530163, guid: a2a0bb30edd20441c8cea27be765d478,
-        type: 3}
-      propertyPath: tileAlive
-      value: 
-      objectReference: {fileID: 11400000, guid: 0270ed91561ed4911b2fb9a288f38d53,
-        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2a0bb30edd20441c8cea27be765d478, type: 3}
