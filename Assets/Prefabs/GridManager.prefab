@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7009483b1c2ee4ef8b8c594f2bd81600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
   grid: {fileID: 0}
   tilemap: {fileID: 0}
-  gridWidth: 0
-  gridHeight: 0
+  smartTile: {fileID: 11400000, guid: 03d3f0bee0b5c48c795cc6b2f063f5d6, type: 2}

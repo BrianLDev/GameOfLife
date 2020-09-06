@@ -4,17 +4,21 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class GridManager : MonoBehaviour {
+  public Camera mainCamera;
   public GridLayout grid;
   public Tilemap tilemap;
+  public TmapTile smartTile;
   private int gridWidth, gridHeight;
 
   private void Awake() {
-    if(!grid) {
-      grid = GameObject.FindObjectOfType<GridLayout>();
-    }
-    if(!tilemap) {
-      tilemap = GameObject.FindObjectOfType<Tilemap>();
-    }
+    if(!mainCamera)
+      mainCamera = FindObjectOfType<Camera>();
+    if(!grid)
+      grid = FindObjectOfType<GridLayout>();
+    if(!tilemap)
+      tilemap = FindObjectOfType<Tilemap>();
+    if(!smartTile)
+      smartTile = FindObjectOfType<TmapTile>();
   }
 
   private void Start() {
@@ -30,7 +34,16 @@ public class GridManager : MonoBehaviour {
   }
 
   public void CreateGrid() {
+    ResetGrid();
     Debug.Log("Creating a " + gridWidth + " x " + gridHeight + " grid.");
-    // TODO: CREATE GRID
+    tilemap.size = new Vector3Int(gridWidth, gridHeight, 1);
+    tilemap.origin = new Vector3Int(-gridWidth/2, -gridHeight/2, 1);
+    tilemap.FloodFill(tilemap.origin, smartTile);
+  }
+
+  public void ResetGrid() {
+    Debug.Log("Resetting grid");
+    tilemap.ClearAllTiles();
+    tilemap.origin = Vector3Int.zero;
   }
 }
