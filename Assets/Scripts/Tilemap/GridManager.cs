@@ -66,10 +66,11 @@ public class GridManager : MonoBehaviour {
 
   public void ResetGrid() {
     Debug.Log("Resetting grid...");
-    ClearGrid();
+    tilemap.ClearAllTiles();
+    tilemap.origin = Vector3Int.zero;
     gridWidth = 5;
     gridHeight = 5;
-    SetCameraFOV();
+    CreateGrid();
   }
 
   private void SetCameraFOV() {
