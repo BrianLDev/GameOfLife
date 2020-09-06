@@ -8,8 +8,8 @@ public class GridManager : MonoBehaviour {
   public GridLayout grid;
   public Tilemap tilemap;
   public TmapTile smartTile;
-  private int gridWidth = 2;
-  private int gridHeight = 2;
+  private int gridWidth = 5;
+  private int gridHeight = 5;
   private float targetFOV = 65;
 
   private void Awake() {
@@ -28,17 +28,19 @@ public class GridManager : MonoBehaviour {
   }
 
   private void Update() {
-    if ((mainCamera.fieldOfView <= targetFOV*.95) || (mainCamera.fieldOfView >= targetFOV*1.05)) {
-      mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, targetFOV, Time.deltaTime*2);
+    if ((mainCamera.fieldOfView <= targetFOV*.97) || (mainCamera.fieldOfView >= targetFOV*1.03)) {
+      mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, targetFOV, Time.deltaTime*3.0f);
     }
   }
 
-  public void SetWidth(int width) {
-    gridWidth = width+2;
+  public void SetWidth(int widthIndex) {
+    if(widthIndex==0) { widthIndex = 1; }
+    gridWidth = (widthIndex+1)*5;
   }
 
-  public void SetHeight(int height) {
-    gridHeight = height+2;
+  public void SetHeight(int heightIndex) {
+    if(heightIndex==0) { heightIndex = 1; }
+    gridHeight = (heightIndex+1)*5;
   }
 
   public void CreateGrid() {
@@ -59,17 +61,25 @@ public class GridManager : MonoBehaviour {
   public void ResetGrid() {
     Debug.Log("Resetting grid...");
     ClearGrid();
-    gridWidth = 2;
-    gridHeight = 2;
+    gridWidth = 5;
+    gridHeight = 5;
     SetCameraFOV();
   }
 
   private void SetCameraFOV() {
-    if(gridWidth <= 15 && gridHeight <= 10)
+    if(gridWidth <= 20 && gridHeight <= 10)
       targetFOV = 65;
     else if(gridWidth <= 30 && gridHeight <= 20)
-      targetFOV = 95;
+      targetFOV = 100;
+    else if(gridWidth <= 45 && gridHeight <= 30)
+      targetFOV = 120;
     else if(gridWidth <= 60 && gridHeight <= 40)
-      targetFOV = 125;
+      targetFOV = 135;
+    else if(gridWidth <= 75 && gridHeight <= 50)
+      targetFOV = 145;
+    else if(gridWidth <= 110 && gridHeight <= 75)
+      targetFOV = 155;      
+    else if(gridWidth <= 150 && gridHeight <= 100)
+      targetFOV = 165;  
   }
 }
