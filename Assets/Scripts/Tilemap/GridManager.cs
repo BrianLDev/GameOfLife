@@ -82,7 +82,7 @@ public class GridManager : MonoBehaviour {
   }
 
   public void RecalculateGridBounds() {
-    // tilemap.CompressBounds(); 
+    tilemap.CompressBounds(); 
     tilemap.ResizeBounds();
     gridWidth = tilemap.size[0];
     gridHeight = tilemap.size[1];
@@ -106,8 +106,7 @@ public class GridManager : MonoBehaviour {
     tilemap = Instantiate(initialTilemap, initialTilemap.transform.position, initialTilemap.transform.rotation, initialTilemap.transform.parent);
     tilemap.name = "Tilemap";
     tilemap.gameObject.SetActive(true); // make sure it's visible
-    gridWidth = tilemap.size[0];
-    gridHeight = tilemap.size[1];
+    RecalculateGridBounds();
   }
 
   private void SetCameraFOV() {
