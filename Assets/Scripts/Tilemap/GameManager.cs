@@ -5,10 +5,13 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
     public GameObject UI;
+    public GridManager gridManager;
 
     private void Awake() {
         if (!UI)
             UI = GameObject.Find("UI");
+        if (!gridManager)
+            gridManager = GameObject.FindObjectOfType<GridManager>();
     }
 
     private void Update() {
@@ -25,6 +28,7 @@ public class GameManager : MonoBehaviour {
     public void StartSim() {
         Debug.Log("Starting sim...");
         ToggleUI();
+        gridManager.SaveGridState();   // save initial layout in case we need to reset back to it
         // TODO CREATE SIM LOGIC
     }
 

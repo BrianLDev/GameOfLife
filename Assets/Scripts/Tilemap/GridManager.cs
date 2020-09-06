@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System; // for .MemberwiseClone
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -7,7 +8,9 @@ public class GridManager : MonoBehaviour {
   public Camera mainCamera;
   public GridLayout grid;
   public Tilemap tilemap;
-  public TmapTile smartTile;
+  public Tile tileEmpty, tileSelected, tileAlive;
+  // public TmapTile smartTile;   // not used in this version.  Keep for possible future use
+  private Tilemap initialTilemap;
   private int gridWidth = 5;
   private int gridHeight = 5;
   private float targetFOV = 65;
@@ -19,12 +22,11 @@ public class GridManager : MonoBehaviour {
       grid = FindObjectOfType<GridLayout>();
     if(!tilemap)
       tilemap = FindObjectOfType<Tilemap>();
-    if(!smartTile)
-      smartTile = FindObjectOfType<TmapTile>();
   }
 
   private void Start() {
     Debug.Log("Size = " + tilemap.size);
+    SaveGridState();
   }
 
   private void Update() {
@@ -49,12 +51,12 @@ public class GridManager : MonoBehaviour {
       gridHeight = (heightIndex-17)*50; // increments of 50 from 150 to 500 (index 20 to 27)
   }
 
-  public void CreateGrid() {
+  public void CreateGridLayout() {
     ClearGrid();
     Debug.Log("Creating a " + gridWidth + " x " + gridHeight + " grid.");
     tilemap.size = new Vector3Int(gridWidth, gridHeight, 1);
-    tilemap.origin = new Vector3Int(-gridWidth/2, -gridHeight/2, 1);
-    tilemap.FloodFill(tilemap.origin, smartTile);
+    tilemap.origin = new Vector3Int(-gridWidth/2, -gridHeight/2, 0);
+    tilemap.FloodFill(tilemap.origin, tileEmpty);
     SetCameraFOV();
   }
 
@@ -62,18 +64,39 @@ public class GridManager : MonoBehaviour {
     Debug.Log("Clearing grid...");
     tilemap.ClearAllTiles();
     tilemap.origin = Vector3Int.zero;
+    SetCameraFOV();
   }
 
   public void ResetGrid() {
-    Debug.Log("Resetting grid...");
-    tilemap.ClearAllTiles();
-    tilemap.origin = Vector3Int.zero;
-    gridWidth = 5;
-    gridHeight = 5;
-    CreateGrid();
+    Debug.Log("Resetting grid to previous state...");
+    RestoreGridState();
+    SetCameraFOV();
+  }
+
+  public void SaveGridState() {
+    // saves duplicate copy of initial tilemap to restore to later
+    if(initialTilemap != null)
+      Destroy(initialTilemap.gameObject);
+    
+    initialTilemap = Instantiate(tilemap, tilemap.transform.position, tilemap.transform.rotation, tilemap.transform.parent);
+    initialTilemap.name = "Tilemap Initial State";
+    initialTilemap.gameObject.SetActive(false); // make sure it's not visible
+  }
+
+  public void RestoreGridState() {
+    // restores to copy of initial tilemap and makes a new copy
+    if (tilemap != null)
+      Destroy(tilemap.gameObject);
+
+    tilemap = Instantiate(initialTilemap, initialTilemap.transform.position, initialTilemap.transform.rotation, initialTilemap.transform.parent);
+    tilemap.name = "Tilemap";
+    tilemap.gameObject.SetActive(true); // make sure it's visible
+    gridWidth = tilemap.size[0];
+    gridHeight = tilemap.size[1];
   }
 
   private void SetCameraFOV() {
+    // TODO: Automate this if possible and if there's time.  For now, it works. 
     if(gridWidth <= 20 && gridHeight <= 10)
       targetFOV = 65;
     else if(gridWidth <= 30 && gridHeight <= 20)
