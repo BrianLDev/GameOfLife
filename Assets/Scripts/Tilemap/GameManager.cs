@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour {
 
     public GameObject menuPanel, menuToggler;
     public GridManager gridManager;
+    private bool simulationRunning = false;
+    private bool simulationPaused = false;
 
     private void Awake() {
         if (!menuPanel)
@@ -22,28 +24,66 @@ public class GameManager : MonoBehaviour {
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Escape))
             ToggleUI();
+
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            if (simulationRunning)
+                SimStop();
+            else {
+                SimStart();
+            }
+        }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
             StartCoroutine(gridManager.Simulate(1));
     }
 
-    public void StartSim() {
+    public void SimStart() {
         Debug.Log("Starting sim...");
-        // ToggleUI();
-        gridManager.SaveGridState();   // save initial layout in case we need to reset back to it
+        simulationRunning = true;
+        HideUI();
+        if(!simulationPaused) {
+            gridManager.SaveGridLayout();   // save initial layout in case we need to reset back to it
+        }
+        simulationPaused = false;
         StartCoroutine(gridManager.Simulate(9999));
     }
 
-    public void StopSim() {
+    public void SimPause() {
+        Debug.Log("Pausing Simulation...");
+        simulationRunning = false;
+        simulationPaused = true;
+        StopAllCoroutines();
+    }
+
+    public void SimStep() {
+        Debug.Log("Simulating 1 generation...");
+        simulationRunning = true;
+        HideUI();
+        StartCoroutine(gridManager.Simulate(1));
+        simulationRunning = false;
+    }
+
+    public void SimStop() {
         Debug.Log("Stopping sim...");
+        simulationRunning = false;
         StopAllCoroutines();
     }
 
     public void ToggleUI() {
         menuPanel.SetActive(!menuPanel.activeInHierarchy);
         menuToggler.SetActive(!menuToggler.activeInHierarchy);
+    }
+
+    public void HideUI() {
+        menuPanel.SetActive(false);
+        menuToggler.SetActive(true);
+    }
+
+    public void ShowUI() {
+        menuPanel.SetActive(true);
+        menuToggler.SetActive(false);
     }
 
     public void QuitGame() {

@@ -25,7 +25,7 @@ public class GridManager : MonoBehaviour {
   }
 
   private void Start() {
-    SaveGridState();
+    SaveGridLayout();
     SetCameraFOV();
   }
 
@@ -52,6 +52,7 @@ public class GridManager : MonoBehaviour {
   }
 
   public void CreateGridLayout() {
+    StopAllCoroutines();
     ClearGrid();
     Debug.Log("Creating a " + gridWidth + " x " + gridHeight + " grid.");
     tilemap.size = new Vector3Int(gridWidth, gridHeight, 1);
@@ -62,13 +63,8 @@ public class GridManager : MonoBehaviour {
 
   public void ClearGrid() {
     Debug.Log("Clearing grid...");
+    StopAllCoroutines();
     tilemap.ClearAllTiles();
-  }
-
-  public void ResetGrid() {
-    Debug.Log("Resetting grid to previous state...");
-    RestoreGridState();
-    SetCameraFOV();
   }
 
   public void RecalculateGridBounds() {
@@ -78,7 +74,27 @@ public class GridManager : MonoBehaviour {
     gridHeight = tilemap.size[1];
   }
 
-  public void SaveGridState() {
+  public void Randomize() {
+    tileArray = PopulateTileArray(tilemap);
+    Tile newTile = new Tile();
+    Vector3Int pos = new Vector3Int();
+
+    for (int i=0; i<tilemap.size.x; i++) {
+      for (int j=0; j<tilemap.size.y; j++) {
+        pos.x = tilemap.origin.x + i;
+        pos.y = tilemap.origin.y + j;
+        if (Random.Range(1,100) <= 93) {
+          tileArray[i,j] = Instantiate(tileEmpty);
+        }
+        else {
+          tileArray[i,j] = Instantiate(tileAlive);
+        }
+        tilemap.SetTile(pos, tileArray[i,j]);
+      }
+    }
+  }
+
+  public void SaveGridLayout() {
     // saves duplicate copy of initial tilemap to restore to later
     if(initialTilemap != null)
       Destroy(initialTilemap.gameObject);
@@ -88,7 +104,14 @@ public class GridManager : MonoBehaviour {
     initialTilemap.gameObject.SetActive(false); // make sure it's not visible
   }
 
-  public void RestoreGridState() {
+  public void RestoreGridLayout() {
+    Debug.Log("Restoring grid to previous state...");
+    StopAllCoroutines();
+    RestoreTilemap();
+    SetCameraFOV();
+  }
+
+  private void RestoreTilemap() {
     // restores to copy of initial tilemap and makes a new copy
     if (tilemap != null)
       Destroy(tilemap.gameObject);
@@ -119,25 +142,6 @@ public class GridManager : MonoBehaviour {
     return arrayOfTiles;
   }
 
-  public void Randomize() {
-    tileArray = PopulateTileArray(tilemap);
-    Tile newTile = new Tile();
-    Vector3Int pos = new Vector3Int();
-
-    for (int i=0; i<tilemap.size.x; i++) {
-      for (int j=0; j<tilemap.size.y; j++) {
-        pos.x = tilemap.origin.x + i;
-        pos.y = tilemap.origin.y + j;
-        if (Random.Range(1,100) <= 93) {
-          tileArray[i,j] = Instantiate(tileEmpty);
-        }
-        else {
-          tileArray[i,j] = Instantiate(tileAlive);
-        }
-        tilemap.SetTile(pos, tileArray[i,j]);
-      }
-    }
-  }
 
   private int CountAliveNeighbors(Tile tile, Vector3Int pos) {
 
