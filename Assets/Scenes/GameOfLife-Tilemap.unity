@@ -159,7 +159,7 @@ Grid:
   m_GameObject: {fileID: 888299263}
   m_Enabled: 1
   m_CellSize: {x: 1, y: 1, z: 0}
-  m_CellGap: {x: 0.05, y: 0.05, z: 0}
+  m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
 --- !u!4 &888299265
@@ -195,9 +195,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d050cc95cffd348a99085f2b4a679158, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1480320681 stripped
+--- !u!1 &1526854761 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 545101877558893360, guid: 881bc153615424453b1f5cb3b8045b42,
+  m_CorrespondingSourceObject: {fileID: 7653349329525073489, guid: 881bc153615424453b1f5cb3b8045b42,
+    type: 3}
+  m_PrefabInstance: {fileID: 545101879037672857}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1905478259 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1101827492264963705, guid: 881bc153615424453b1f5cb3b8045b42,
     type: 3}
   m_PrefabInstance: {fileID: 545101879037672857}
   m_PrefabAsset: {fileID: 0}
@@ -2729,7 +2735,12 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 126451190}
-    - target: {fileID: 3283249453638432123, guid: 881bc153615424453b1f5cb3b8045b42,
+    - target: {fileID: 545101879580094208, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 126451190}
+    - target: {fileID: 4089297914703048024, guid: 881bc153615424453b1f5cb3b8045b42,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -2744,16 +2755,46 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 126451190}
+    - target: {fileID: 4789416161692399325, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 126451190}
     - target: {fileID: 5799401249307305946, guid: 881bc153615424453b1f5cb3b8045b42,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 126451190}
+    - target: {fileID: 6102069742779886037, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1237586800}
+    - target: {fileID: 6465841318719892355, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1237586800}
+    - target: {fileID: 6902701913315027379, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 126451190}
+    - target: {fileID: 6902701913315027379, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 126451190}
     - target: {fileID: 8860021704560943315, guid: 881bc153615424453b1f5cb3b8045b42,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1237586800}
+      objectReference: {fileID: 126451190}
+    - target: {fileID: 8860021704560943315, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Randomize
+      objectReference: {fileID: 0}
     - target: {fileID: 9006582247387180670, guid: 881bc153615424453b1f5cb3b8045b42,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -2835,9 +2876,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2107620874102027249, guid: 432ddcfda530c42f2995eab23c27bcbf,
         type: 3}
-      propertyPath: UI
+      propertyPath: menuPanel
       value: 
-      objectReference: {fileID: 1480320681}
+      objectReference: {fileID: 1905478259}
+    - target: {fileID: 2107620874102027249, guid: 432ddcfda530c42f2995eab23c27bcbf,
+        type: 3}
+      propertyPath: menuToggler
+      value: 
+      objectReference: {fileID: 1526854761}
     - target: {fileID: 2107620874102027249, guid: 432ddcfda530c42f2995eab23c27bcbf,
         type: 3}
       propertyPath: gridManager

@@ -4,32 +4,36 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
-    public GameObject UI;
+    public GameObject menuPanel, menuToggler;
     public GridManager gridManager;
 
     private void Awake() {
-        if (!UI)
-            UI = GameObject.Find("UI");
+        if (!menuPanel)
+            menuPanel = GameObject.Find("Menu Panel");
+        if (!menuToggler)
+            menuToggler = GameObject.Find("Menu Toggler");
         if (!gridManager)
             gridManager = GameObject.FindObjectOfType<GridManager>();
     }
 
-    private void Update() {
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            ToggleUI();
-        }
+    private void Start() {
+        menuPanel.SetActive(true);
+        menuToggler.SetActive(false);
     }
 
-    public void Randomize() {
-        Debug.Log("Randomizing grid layout");
-        gridManager.Randomize();
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Space))
+            ToggleUI();
+
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+            StartCoroutine(gridManager.Simulate(1));
     }
 
     public void StartSim() {
         Debug.Log("Starting sim...");
         // ToggleUI();
         gridManager.SaveGridState();   // save initial layout in case we need to reset back to it
-        StartCoroutine(gridManager.Simulate(999));
+        StartCoroutine(gridManager.Simulate(9999));
     }
 
     public void StopSim() {
@@ -38,7 +42,8 @@ public class GameManager : MonoBehaviour {
     }
 
     public void ToggleUI() {
-        UI.SetActive(!UI.activeInHierarchy);
+        menuPanel.SetActive(!menuPanel.activeInHierarchy);
+        menuToggler.SetActive(!menuToggler.activeInHierarchy);
     }
 
     public void QuitGame() {

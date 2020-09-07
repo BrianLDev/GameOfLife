@@ -43,5 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d050cc95cffd348a99085f2b4a679158, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UI: {fileID: 0}
+  menuPanel: {fileID: 0}
+  menuToggler: {fileID: 0}
   gridManager: {fileID: 0}
