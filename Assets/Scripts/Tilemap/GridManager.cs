@@ -36,10 +36,23 @@ public class GridManager : MonoBehaviour {
   }
 
   public void Simulate(int generations=1) {
-    tileArray = tilemap.GetTilesBlock(tilemap.cellBounds);
-    foreach (TileBase tile in tileArray) {
-      if(Random.Range(1,100)>50) {
-        
+    // Tile tile = new Tile();
+    Vector3Int pos = new Vector3Int();
+
+    for (int i=0; i<gridWidth; i++) {
+      for (int j=0; j<gridHeight; j++) {
+        pos.x = i;
+        pos.y = j;
+        // tile = tilemap.GetTile<Tile>(pos);
+        if (Random.Range(1,100)<75) {
+          // tile = tileAlive;
+          tilemap.SetTile(pos, tileAlive);
+          tilemap.SetColor(pos, Color.red);
+        }
+        else {
+          // tilemap.SetTile(pos, tileSelected);
+          tilemap.SetColor(pos, Color.green);
+        }
       }
     }
   }

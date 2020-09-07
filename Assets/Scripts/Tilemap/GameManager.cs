@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour {
         Debug.Log("Starting sim...");
         ToggleUI();
         gridManager.SaveGridState();   // save initial layout in case we need to reset back to it
+        gridManager.Simulate(10);
         // TODO CREATE SIM LOGIC
     }
 
