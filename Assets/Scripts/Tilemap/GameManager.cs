@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour {
 
     public void Randomize() {
         Debug.Log("Randomizing grid layout");
-        // TODO: RANDOMIZE GRID LAYOUT
+        gridManager.Randomize();
     }
 
     public void StartSim() {

@@ -9,7 +9,7 @@ public class GridManager : MonoBehaviour {
   public Tilemap tilemap;
   public Tile tileEmpty, tileSelected, tileAlive;
   // public TmapTile smartTile;   // not used in this version.  Keep for possible future use
-  private TileBase[] tileArray;
+  private Tile[,] tileArray;
   private Tilemap initialTilemap;
   private int gridWidth = 5;
   private int gridHeight = 5;
@@ -35,34 +35,6 @@ public class GridManager : MonoBehaviour {
     }
   }
 
-  public void Simulate(int generations=1) {
-    Tile tile = new Tile();
-    Tile newTile = new Tile();
-    Vector3Int pos = new Vector3Int();
-
-    for (int i=0; i<gridWidth; i++) {
-      for (int j=0; j<gridHeight; j++) {
-        pos.x = tilemap.origin.x + i;
-        pos.y = tilemap.origin.y + j;
-        tile = tilemap.GetTile<Tile>(pos);  // get current tile to check alive/dead, color, etc
-        
-
-        tilemap.SetTileFlags(pos, TileFlags.None);  // remove tileflags so we can change color
-
-        if (tile.sprite == tileEmpty.sprite) {
-          newTile = Instantiate(tileAlive);
-          newTile.color = Color.green;
-          tilemap.SetTile(pos, newTile);
-        }
-        else if (tile.sprite == tileAlive.sprite) {
-          newTile = Instantiate(tileSelected);
-          newTile.color = Color.red;
-          tilemap.SetTile(pos, newTile);
-        }
-      }
-    }
-  }
-
   public void SetWidth(int widthIndex) {
     if (widthIndex==0) { gridWidth = 5; }
     else if (widthIndex <=19)
@@ -78,7 +50,6 @@ public class GridManager : MonoBehaviour {
     else if (heightIndex >= 20)
       gridHeight = (heightIndex-17)*50; // increments of 50 from 150 to 500 (index 20 to 27)
   }
-
 
   public void CreateGridLayout() {
     ClearGrid();
@@ -127,6 +98,76 @@ public class GridManager : MonoBehaviour {
     tilemap.gameObject.SetActive(true); // make sure it's visible
     RecalculateGridBounds();
   }
+
+  public Tile[,] PopulateTileArray(Tilemap tmap) {
+    Tile[,] arrayOfTiles = new Tile[tmap.size.x, tmap.size.y];
+
+    Tile tile = new Tile();
+    Tile newTile = new Tile();
+    Vector3Int pos = new Vector3Int();
+
+    for (int i=0; i<gridWidth; i++) {
+      for (int j=0; j<gridHeight; j++) {
+        pos.x = tilemap.origin.x + i;
+        pos.y = tilemap.origin.y + j;
+        tile = tilemap.GetTile<Tile>(pos);  // get current tile to check alive/dead, color, etc
+        arrayOfTiles[i,j] = tile; // assigns a copy of the tile to a spot in the 2d array
+        // Debug.Log("Tile " + i + "," + j + " = " + tile.name);
+        // Debug.Log("Array of tiles " + i + "," + j + " = " + arrayOfTiles[i,j].name);
+      }
+    }
+    return arrayOfTiles;
+  }
+
+  public void Randomize() {
+    tileArray = PopulateTileArray(tilemap);
+    Tile newTile = new Tile();
+    Vector3Int pos = new Vector3Int();
+
+    for (int i=0; i<tilemap.size.x; i++) {
+      for (int j=0; j<tilemap.size.y; j++) {
+        pos.x = tilemap.origin.x + i;
+        pos.y = tilemap.origin.y + j;
+        if (Random.Range(1,100) <= 93) {
+          tileArray[i,j] = Instantiate(tileEmpty);
+        }
+        else {
+          tileArray[i,j] = Instantiate(tileAlive);
+        }
+        tilemap.SetTile(pos, tileArray[i,j]);
+      }
+    }
+  }
+
+  public void Simulate(int generations=1) {
+    tileArray = PopulateTileArray(tilemap);
+
+    Tile tile = new Tile();
+    Tile newTile = new Tile();
+    Vector3Int pos = new Vector3Int();
+
+    for (int i=0; i<tilemap.size.x; i++) {
+      for (int j=0; j<tilemap.size.y; j++) {
+        pos.x = tilemap.origin.x + i;
+        pos.y = tilemap.origin.y + j;
+        tile = tilemap.GetTile<Tile>(pos);  // get current tile to check alive/dead, color, etc
+        
+
+        tilemap.SetTileFlags(pos, TileFlags.None);  // remove tileflags so we can change color
+
+        if (tile.sprite == tileEmpty.sprite) {
+          newTile = Instantiate(tileAlive);
+          newTile.color = Color.green;
+          tilemap.SetTile(pos, newTile);
+        }
+        else if (tile.sprite == tileAlive.sprite) {
+          newTile = Instantiate(tileSelected);
+          newTile.color = Color.red;
+          tilemap.SetTile(pos, newTile);
+        }
+      }
+    }
+  }  
 
   private void SetCameraFOV() {
     // TODO: Automate this if possible and if there's time.  For now, it works. 
