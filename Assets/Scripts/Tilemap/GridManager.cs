@@ -185,53 +185,57 @@ public class GridManager : MonoBehaviour {
     return aliveCount;
   }
 
-  public void Simulate(int generations=1) {
-    tileArray = PopulateTileArray(tilemap);
+  public IEnumerator Simulate(int generations=1) {
+    for (int g=1; g<=generations; g++) {
+      tileArray = PopulateTileArray(tilemap);
 
-    Tile tile = new Tile();
-    Tile newTile = new Tile();
-    Vector3Int pos = new Vector3Int();
-    int aliveNeighbors = 0;
+      Tile tile = new Tile();
+      Tile newTile = new Tile();
+      Vector3Int pos = new Vector3Int();
+      int aliveNeighbors = 0;
 
-    for (int i=0; i<tilemap.size.x; i++) {
-      for (int j=0; j<tilemap.size.y; j++) {
-        pos.x = tilemap.origin.x + i;
-        pos.y = tilemap.origin.y + j;
-        tile = tilemap.GetTile<Tile>(pos);  // get current tile to check alive/dead, color, etc
-        
-        tilemap.SetTileFlags(pos, TileFlags.None);  // remove tileflags so we can change color
+      for (int i=0; i<tilemap.size.x; i++) {
+        for (int j=0; j<tilemap.size.y; j++) {
+          pos.x = tilemap.origin.x + i;
+          pos.y = tilemap.origin.y + j;
+          tile = tilemap.GetTile<Tile>(pos);  // get current tile to check alive/dead, color, etc
+          
+          tilemap.SetTileFlags(pos, TileFlags.None);  // remove tileflags so we can change color
 
-        // if (tile.sprite == tileEmpty.sprite) {
-        //   newTile = Instantiate(tileAlive);
-        //   newTile.color = Color.green;
-        //   tilemap.SetTile(pos, newTile);
-        // }
-        // else if (tile.sprite == tileAlive.sprite) {
-        //   newTile = Instantiate(tileSelected);
-        //   newTile.color = Color.red;
-        //   tilemap.SetTile(pos, newTile);
-        // }
+          // if (tile.sprite == tileEmpty.sprite) {
+          //   newTile = Instantiate(tileAlive);
+          //   newTile.color = Color.green;
+          //   tilemap.SetTile(pos, newTile);
+          // }
+          // else if (tile.sprite == tileAlive.sprite) {
+          //   newTile = Instantiate(tileSelected);
+          //   newTile.color = Color.red;
+          //   tilemap.SetTile(pos, newTile);
+          // }
 
-        aliveNeighbors = CountAliveNeighbors(tile, pos);
-        // Debug.Log("At position (" + pos.x + "," + pos.y + ") found " + aliveNeighbors + " alive neighbors.");
-        bool alive = tile.sprite == tileAlive.sprite;
-        if (alive && aliveNeighbors < 2) {
-          newTile = Instantiate(tileEmpty);
-          newTile.color = Color.red;
-          tilemap.SetTile(pos, newTile);
-        }
-        else if (alive && aliveNeighbors > 3) {
-          newTile = Instantiate(tileEmpty);
-          newTile.color = Color.red;
-          tilemap.SetTile(pos, newTile);
-        }
-        else if (!alive && aliveNeighbors == 3) {
-          newTile = Instantiate(tileAlive);
-          newTile.color = Color.green;
-          tilemap.SetTile(pos, newTile);
+          aliveNeighbors = CountAliveNeighbors(tile, pos);
+          // Debug.Log("At position (" + pos.x + "," + pos.y + ") found " + aliveNeighbors + " alive neighbors.");
+          bool alive = tile.sprite == tileAlive.sprite;
+          if (alive && aliveNeighbors < 2) {
+            newTile = Instantiate(tileEmpty);
+            newTile.color = Color.red;
+            tilemap.SetTile(pos, newTile);
+          }
+          else if (alive && aliveNeighbors > 3) {
+            newTile = Instantiate(tileEmpty);
+            newTile.color = Color.red;
+            tilemap.SetTile(pos, newTile);
+          }
+          else if (!alive && aliveNeighbors == 3) {
+            newTile = Instantiate(tileAlive);
+            newTile.color = Color.green;
+            tilemap.SetTile(pos, newTile);
+          }
         }
       }
+      yield return null;
     }
+    yield return null;
   }  
 
   private void SetCameraFOV() {

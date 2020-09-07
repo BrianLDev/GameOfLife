@@ -29,11 +29,23 @@ public class GameManager : MonoBehaviour {
         Debug.Log("Starting sim...");
         // ToggleUI();
         gridManager.SaveGridState();   // save initial layout in case we need to reset back to it
-        gridManager.Simulate(1);
-        // TODO CREATE SIM LOGIC
+        StartCoroutine(gridManager.Simulate(999));
+    }
+
+    public void StopSim() {
+        Debug.Log("Stopping sim...");
+        StopAllCoroutines();
     }
 
     public void ToggleUI() {
         UI.SetActive(!UI.activeInHierarchy);
+    }
+
+    public void QuitGame() {
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
     }
 }
