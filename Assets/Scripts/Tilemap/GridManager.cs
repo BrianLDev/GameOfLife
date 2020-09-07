@@ -9,7 +9,6 @@ public class GridManager : MonoBehaviour {
   public Tilemap tilemap;
   public Tile tileEmpty, tileSelected, tileAlive;
   // public TmapTile smartTile;   // not used in this version.  Keep for possible future use
-  private Tile[,] tileArray;
   private Tilemap initialTilemap;
   private int gridWidth = 5;
   private int gridHeight = 5;
@@ -75,21 +74,29 @@ public class GridManager : MonoBehaviour {
   }
 
   public void Randomize() {
-    tileArray = PopulateTileArray(tilemap);
+    StopAllCoroutines();
+    // PopulateTileArray(tilemap);
     Tile newTile = new Tile();
     Vector3Int pos = new Vector3Int();
+    float perlinNoise;
 
     for (int i=0; i<tilemap.size.x; i++) {
       for (int j=0; j<tilemap.size.y; j++) {
         pos.x = tilemap.origin.x + i;
         pos.y = tilemap.origin.y + j;
+        // perlinNoise = Mathf.PerlinNoise(i, j); // TODO: use perlin noise for randomizer
+        // Debug.Log(perlinNoise);
         if (Random.Range(1,100) <= 93) {
-          tileArray[i,j] = Instantiate(tileEmpty);
+          // tileArray[i,j] = Instantiate(tileEmpty); // instantiate causes major slowdowns.  Just use copies of a prefab
+          // newTile = Instantiate(tileEmpty); // instantiate causes major slowdowns.  Just use copies of a prefab
+          tilemap.SetTile(pos, tileEmpty);
         }
         else {
-          tileArray[i,j] = Instantiate(tileAlive);
+          // tileArray[i,j] = Instantiate(tileAlive); // instantiate causes major slowdowns.  Just use copies of a prefab
+          // newTile = Instantiate(tileAlive); // instantiate causes major slowdowns.  Just use copies of a prefab
+          tilemap.SetTile(pos, tileAlive);
         }
-        tilemap.SetTile(pos, tileArray[i,j]);
+        // tilemap.SetTile(pos, tileArray[i,j]);
       }
     }
   }
@@ -122,79 +129,10 @@ public class GridManager : MonoBehaviour {
     RecalculateGridBounds();
   }
 
-  public Tile[,] PopulateTileArray(Tilemap tmap) {
-    Tile[,] arrayOfTiles = new Tile[tmap.size.x, tmap.size.y];
-
-    Tile tile = new Tile();
-    Tile newTile = new Tile();
-    Vector3Int pos = new Vector3Int();
-
-    for (int i=0; i<gridWidth; i++) {
-      for (int j=0; j<gridHeight; j++) {
-        pos.x = tilemap.origin.x + i;
-        pos.y = tilemap.origin.y + j;
-        tile = tilemap.GetTile<Tile>(pos);  // get current tile to check alive/dead, color, etc
-        arrayOfTiles[i,j] = tile; // assigns a copy of the tile to a spot in the 2d array
-        // Debug.Log("Tile " + i + "," + j + " = " + tile.name);
-        // Debug.Log("Array of tiles " + i + "," + j + " = " + arrayOfTiles[i,j].name);
-      }
-    }
-    return arrayOfTiles;
-  }
-
-
-  private int CountAliveNeighbors(Tile tile, Vector3Int pos) {
-
-    // Debug.Log("Counting neighbors for tile at: " + pos);
-    Vector3Int normalizedPos = new Vector3Int();
-    normalizedPos.x = pos.x - tilemap.origin.x;
-    normalizedPos.y = pos.y - tilemap.origin.y;
-
-    int aliveCount = 0;
-    Tile lookupTile = new Tile();
-    Vector3Int lookupPos = new Vector3Int();
-    Vector3Int lookupPosOrigin = new Vector3Int();
-
-    for (int i=-1; i<2; i++) {
-      lookupPos.x = normalizedPos.x + i;
-
-      if(lookupPos.x < 0) { 
-        lookupPos.x = tilemap.size.x-1; 
-      }
-      else if (lookupPos.x > tilemap.size.x-1) { 
-        lookupPos.x = 0; 
-      }
-      for (int j=-1; j<2; j++) {
-        lookupPos.y = normalizedPos.y + j;
-
-        if(lookupPos.y < 0) { 
-          lookupPos.y = tilemap.size.y-1; 
-        }
-        else if (lookupPos.y > tilemap.size.y-1) { 
-          lookupPos.y = 0; 
-        }
-
-        // Debug.Log("looking up tile at: " + lookupPos);
-        lookupPosOrigin.x = lookupPos.x + tilemap.origin.x;
-        lookupPosOrigin.y = lookupPos.y + tilemap.origin.y;
-        // Debug.Log("adjusted by origin to: " + lookupPosOrigin);
-        lookupTile = tilemap.GetTile<Tile>(lookupPosOrigin);
-        // Debug.Log(lookupTile);
-        if (lookupTile.sprite == tileAlive.sprite) {
-          aliveCount++;
-          // Debug.Log("Found a live one...");
-        }
-      }
-    }
-    return aliveCount;
-  }
-
   public IEnumerator Simulate(int generations=1) {
     for (int g=1; g<=generations; g++) {
-      tileArray = PopulateTileArray(tilemap);
-
-      Tile tile = new Tile();
-      Tile newTile = new Tile();
+      Tile getTile = new Tile();
+      Tile setTile = new Tile();
       Vector3Int pos = new Vector3Int();
       int aliveNeighbors = 0;
 
@@ -202,10 +140,9 @@ public class GridManager : MonoBehaviour {
         for (int j=0; j<tilemap.size.y; j++) {
           pos.x = tilemap.origin.x + i;
           pos.y = tilemap.origin.y + j;
-          tile = tilemap.GetTile<Tile>(pos);  // get current tile to check alive/dead, color, etc
-          
           tilemap.SetTileFlags(pos, TileFlags.None);  // remove tileflags so we can change color
-
+          getTile = tilemap.GetTile<Tile>(pos);  // get copy of current tile to check alive/dead, color, etc
+          
           // if (tile.sprite == tileEmpty.sprite) {
           //   newTile = Instantiate(tileAlive);
           //   newTile.color = Color.green;
@@ -217,23 +154,24 @@ public class GridManager : MonoBehaviour {
           //   tilemap.SetTile(pos, newTile);
           // }
 
-          aliveNeighbors = CountAliveNeighbors(tile, pos);
+          aliveNeighbors = CountAliveNeighbors(getTile, pos);
           // Debug.Log("At position (" + pos.x + "," + pos.y + ") found " + aliveNeighbors + " alive neighbors.");
-          bool alive = tile.sprite == tileAlive.sprite;
-          if (alive && aliveNeighbors < 2) {
-            newTile = Instantiate(tileEmpty);
-            newTile.color = Color.red;
-            tilemap.SetTile(pos, newTile);
+
+          bool isAlive = getTile.sprite == tileAlive.sprite;
+          if (isAlive && aliveNeighbors < 2) {
+            setTile = Instantiate(tileEmpty);
+            setTile.color = Color.red;
+            tilemap.SetTile(pos, setTile);
           }
-          else if (alive && aliveNeighbors > 3) {
-            newTile = Instantiate(tileEmpty);
-            newTile.color = Color.red;
-            tilemap.SetTile(pos, newTile);
+          else if (isAlive && aliveNeighbors > 3) {
+            setTile = Instantiate(tileEmpty);
+            setTile.color = Color.red;
+            tilemap.SetTile(pos, setTile);
           }
-          else if (!alive && aliveNeighbors == 3) {
-            newTile = Instantiate(tileAlive);
-            newTile.color = Color.green;
-            tilemap.SetTile(pos, newTile);
+          else if (!isAlive && aliveNeighbors == 3) {
+            setTile = Instantiate(tileAlive);
+            setTile.color = Color.green;
+            tilemap.SetTile(pos, setTile);
           }
         }
       }
@@ -241,6 +179,52 @@ public class GridManager : MonoBehaviour {
     }
     yield return null;
   }  
+
+  private int CountAliveNeighbors(Tile tile, Vector3Int pos) {
+    // Debug.Log("Counting neighbors for tile at: " + pos);
+    Vector3Int normalizedPos = new Vector3Int();
+    normalizedPos.x = pos.x - tilemap.origin.x;
+    normalizedPos.y = pos.y - tilemap.origin.y;
+
+    int aliveCount = 0;
+    // Tile lookupTile = new Tile();
+    // Vector3Int lookupPos = new Vector3Int();
+    // Vector3Int lookupPosOrigin = new Vector3Int();
+
+    // for (int i=-1; i<2; i++) {
+    //   lookupPos.x = normalizedPos.x + i;
+
+    //   if(lookupPos.x < 0) { 
+    //     lookupPos.x = tilemap.size.x-1; 
+    //   }
+    //   else if (lookupPos.x > tilemap.size.x-1) { 
+    //     lookupPos.x = 0; 
+    //   }
+    //   for (int j=-1; j<2; j++) {
+    //     lookupPos.y = normalizedPos.y + j;
+
+    //     if(lookupPos.y < 0) { 
+    //       lookupPos.y = tilemap.size.y-1; 
+    //     }
+    //     else if (lookupPos.y > tilemap.size.y-1) { 
+    //       lookupPos.y = 0; 
+    //     }
+
+    //     // Debug.Log("looking up tile at: " + lookupPos);
+    //     lookupPosOrigin.x = lookupPos.x + tilemap.origin.x;
+    //     lookupPosOrigin.y = lookupPos.y + tilemap.origin.y;
+    //     // Debug.Log("adjusted by origin to: " + lookupPosOrigin);
+    //     lookupTile = tilemap.GetTile<Tile>(lookupPosOrigin);
+    //     // Debug.Log(lookupTile);
+    //     if (lookupTile.sprite == tileAlive.sprite) {
+    //       aliveCount++;
+    //       // Debug.Log("Found a live one...");
+    //     }
+    //   }
+    // }
+    aliveCount = Random.Range(0,9);
+    return aliveCount;
+  }
 
   private void SetCameraFOV() {
     // TODO: Automate this if possible and if there's time.  For now, it works. 
@@ -270,3 +254,24 @@ public class GridManager : MonoBehaviour {
       targetFOV = 176.5f;  
   }
 }
+
+  // NO LONGER USING THIS SCRIPT.  SAVE IN CASE I NEED TO REFERENCE IT
+  // public Tile[,] PopulateTileArray(Tilemap tmap) {
+  //   Tile[,] arrayOfTiles = new Tile[tmap.size.x, tmap.size.y];
+
+  //   Tile tile = new Tile();
+  //   Tile newTile = new Tile();
+  //   Vector3Int pos = new Vector3Int();
+
+  //   for (int i=0; i<gridWidth; i++) {
+  //     for (int j=0; j<gridHeight; j++) {
+  //       pos.x = tilemap.origin.x + i;
+  //       pos.y = tilemap.origin.y + j;
+  //       tile = tilemap.GetTile<Tile>(pos);  // get current tile to check alive/dead, color, etc
+  //       arrayOfTiles[i,j] = tile; // assigns a copy of the tile to a spot in the 2d array
+  //       // Debug.Log("Tile " + i + "," + j + " = " + tile.name);
+  //       // Debug.Log("Array of tiles " + i + "," + j + " = " + arrayOfTiles[i,j].name);
+  //     }
+  //   }
+  //   return arrayOfTiles;
+  // }
