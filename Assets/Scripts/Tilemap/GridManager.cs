@@ -75,18 +75,16 @@ public class GridManager : MonoBehaviour {
 
   public void Randomize() {
     StopAllCoroutines();
-    // PopulateTileArray(tilemap);
     Tile newTile = new Tile();
     Vector3Int pos = new Vector3Int();
-    float perlinNoise;
+    float randomFloat;
 
     for (int i=0; i<tilemap.size.x; i++) {
       for (int j=0; j<tilemap.size.y; j++) {
         pos.x = tilemap.origin.x + i;
         pos.y = tilemap.origin.y + j;
-        // perlinNoise = Mathf.PerlinNoise(i, j); // TODO: use perlin noise for randomizer
-        // Debug.Log(perlinNoise);
-        if (Random.Range(1,100) <= 93) {
+        randomFloat = Random.Range(0f,1f);
+        if (randomFloat <= 0.9) {
           // tileArray[i,j] = Instantiate(tileEmpty); // instantiate causes major slowdowns.  Just use copies of a prefab
           // newTile = Instantiate(tileEmpty); // instantiate causes major slowdowns.  Just use copies of a prefab
           tilemap.SetTile(pos, tileEmpty);
@@ -222,7 +220,7 @@ public class GridManager : MonoBehaviour {
     //     }
     //   }
     // }
-    aliveCount = Random.Range(0,9);
+    aliveCount = UnityEngine.Random.Range(0,9); ////////////  TESTING //////////////////////
     return aliveCount;
   }
 
