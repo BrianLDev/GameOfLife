@@ -36,22 +36,28 @@ public class GridManager : MonoBehaviour {
   }
 
   public void Simulate(int generations=1) {
-    // Tile tile = new Tile();
+    Tile tile = new Tile();
+    Tile newTile = new Tile();
     Vector3Int pos = new Vector3Int();
 
     for (int i=0; i<gridWidth; i++) {
       for (int j=0; j<gridHeight; j++) {
-        pos.x = i;
-        pos.y = j;
-        // tile = tilemap.GetTile<Tile>(pos);
-        if (Random.Range(1,100)<75) {
-          // tile = tileAlive;
-          tilemap.SetTile(pos, tileAlive);
-          tilemap.SetColor(pos, Color.red);
+        pos.x = tilemap.origin.x + i;
+        pos.y = tilemap.origin.y + j;
+        tile = tilemap.GetTile<Tile>(pos);  // get current tile to check alive/dead, color, etc
+        
+
+        tilemap.SetTileFlags(pos, TileFlags.None);  // remove tileflags so we can change color
+
+        if (tile.sprite == tileEmpty.sprite) {
+          newTile = Instantiate(tileAlive);
+          newTile.color = Color.green;
+          tilemap.SetTile(pos, newTile);
         }
-        else {
-          // tilemap.SetTile(pos, tileSelected);
-          tilemap.SetColor(pos, Color.green);
+        else if (tile.sprite == tileAlive.sprite) {
+          newTile = Instantiate(tileSelected);
+          newTile.color = Color.red;
+          tilemap.SetTile(pos, newTile);
         }
       }
     }
