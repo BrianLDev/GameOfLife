@@ -134,23 +134,16 @@ public class GridManager : MonoBehaviour {
       Vector3Int pos = new Vector3Int();
       int aliveNeighbors = 0;
 
+      Debug.Log("Grid Size = " + tilemap.size);
+      Debug.Log("Grid Bounds Min = " + tilemap.cellBounds.xMin + "," + tilemap.cellBounds.yMin);
+      Debug.Log("Grid Bounds Max = " + tilemap.cellBounds.xMax + "," + tilemap.cellBounds.yMax);
+
       for (int i=0; i<tilemap.size.x; i++) {
         for (int j=0; j<tilemap.size.y; j++) {
           pos.x = tilemap.origin.x + i;
           pos.y = tilemap.origin.y + j;
           tilemap.SetTileFlags(pos, TileFlags.None);  // remove tileflags so we can change color
           getTile = tilemap.GetTile<Tile>(pos);  // get copy of current tile to check alive/dead, color, etc
-          
-          // if (tile.sprite == tileEmpty.sprite) {
-          //   newTile = Instantiate(tileAlive);
-          //   newTile.color = Color.green;
-          //   tilemap.SetTile(pos, newTile);
-          // }
-          // else if (tile.sprite == tileAlive.sprite) {
-          //   newTile = Instantiate(tileSelected);
-          //   newTile.color = Color.red;
-          //   tilemap.SetTile(pos, newTile);
-          // }
 
           aliveNeighbors = CountAliveNeighbors(getTile, pos);
           // Debug.Log("At position (" + pos.x + "," + pos.y + ") found " + aliveNeighbors + " alive neighbors.");
@@ -180,48 +173,70 @@ public class GridManager : MonoBehaviour {
 
   private int CountAliveNeighbors(Tile tile, Vector3Int pos) {
     // Debug.Log("Counting neighbors for tile at: " + pos);
-    Vector3Int normalizedPos = new Vector3Int();
-    normalizedPos.x = pos.x - tilemap.origin.x;
-    normalizedPos.y = pos.y - tilemap.origin.y;
-
     int aliveCount = 0;
-    // Tile lookupTile = new Tile();
-    // Vector3Int lookupPos = new Vector3Int();
-    // Vector3Int lookupPosOrigin = new Vector3Int();
 
-    // for (int i=-1; i<2; i++) {
-    //   lookupPos.x = normalizedPos.x + i;
+    Vector3Int[] neighborPositions = GetNeighborPositions(pos, tilemap);
+    Tile lookupTile = new Tile();
 
-    //   if(lookupPos.x < 0) { 
-    //     lookupPos.x = tilemap.size.x-1; 
-    //   }
-    //   else if (lookupPos.x > tilemap.size.x-1) { 
-    //     lookupPos.x = 0; 
-    //   }
-    //   for (int j=-1; j<2; j++) {
-    //     lookupPos.y = normalizedPos.y + j;
-
-    //     if(lookupPos.y < 0) { 
-    //       lookupPos.y = tilemap.size.y-1; 
-    //     }
-    //     else if (lookupPos.y > tilemap.size.y-1) { 
-    //       lookupPos.y = 0; 
-    //     }
-
-    //     // Debug.Log("looking up tile at: " + lookupPos);
-    //     lookupPosOrigin.x = lookupPos.x + tilemap.origin.x;
-    //     lookupPosOrigin.y = lookupPos.y + tilemap.origin.y;
-    //     // Debug.Log("adjusted by origin to: " + lookupPosOrigin);
-    //     lookupTile = tilemap.GetTile<Tile>(lookupPosOrigin);
-    //     // Debug.Log(lookupTile);
-    //     if (lookupTile.sprite == tileAlive.sprite) {
-    //       aliveCount++;
-    //       // Debug.Log("Found a live one...");
-    //     }
-    //   }
-    // }
-    aliveCount = UnityEngine.Random.Range(0,9); ////////////  TESTING //////////////////////
+    foreach(Vector3Int neighborPos in neighborPositions) {
+      // Debug.Log("Looking up tile at: " + neighborPos);
+      lookupTile = tilemap.GetTile<Tile>(neighborPos);
+      // Debug.Log("Tile value: " + lookupTile);
+      if(lookupTile.sprite == tileAlive.sprite) {
+        // Debug.Log("Found a live one...");
+        aliveCount++;
+      }
+    }
     return aliveCount;
+  }
+
+  public static Vector3Int[] GetNeighborPositions(Vector3Int tilePos, Tilemap tmap) {
+    Vector3Int[] neighbors = new Vector3Int[8];
+
+    int[] xAxis = new int[3] {  // from left to right.  Handles wraparound
+      tilePos.x-1 < tmap.cellBounds.xMin ? tmap.cellBounds.xMax-1 : tilePos.x-1,
+      tilePos.x,
+      tilePos.x+1 > tmap.cellBounds.xMax-1 ? tmap.cellBounds.xMin : tilePos.x+1
+    };
+
+    int[] yAxis = new int[3] {  // from bottom to top.  Handles wraparound
+      tilePos.y-1 < tmap.cellBounds.yMin ? tmap.cellBounds.yMax-1 : tilePos.y-1,
+      tilePos.y,
+      tilePos.y+1 > tmap.cellBounds.yMax-1 ? tmap.cellBounds.yMin : tilePos.y+1
+    };
+
+    int neighborIndex = 0;
+    foreach (int xVal in xAxis) {
+      foreach (int yVal in yAxis) {
+        if(xVal == tilePos.x && yVal == tilePos.y) {
+          // Debug.Log("Skipping self");
+          continue; // skip self
+        }
+        else {
+          neighbors[neighborIndex].x = xVal;
+          neighbors[neighborIndex].y = yVal;
+          // Debug.Log("Neighbor " + neighborIndex + " = (" + xVal + "," + yVal + ")");
+          neighborIndex++;
+        }
+      }
+    }
+
+    return neighbors;
+  }
+
+
+  private static Vector3Int PosNorm(Vector3Int tilePos, Tilemap tmap) {  // normalized tile position adjusting for origin
+    Vector3Int normalizedPos = new Vector3Int();
+    normalizedPos.x = tilePos.x - tmap.origin.x;
+    normalizedPos.y = tilePos.y - tmap.origin.y;
+    return normalizedPos;
+  }
+
+  private static Vector3Int PosOrig(Vector3Int tilePos, Tilemap tmap) {  // adjusts position based on tilemap origin
+    Vector3Int adjustedPos = new Vector3Int();
+    adjustedPos.x = tilePos.x + tmap.origin.x;
+    adjustedPos.y = tilePos.y + tmap.origin.y;
+    return adjustedPos;
   }
 
   private void SetCameraFOV() {
