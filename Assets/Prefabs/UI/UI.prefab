@@ -1275,6 +1275,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 545101877552736933}
     m_Modifications:
+    - target: {fileID: 4494484143325391186, guid: 4336525a7b2684af185ed45cd06826fd,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1244942688889840449, guid: 40964602b00f140ebb15e18d1af1ba99,
+        type: 3}
     - target: {fileID: 6189683667389479891, guid: 4336525a7b2684af185ed45cd06826fd,
         type: 3}
       propertyPath: m_Name
@@ -1772,6 +1778,12 @@ PrefabInstance:
       propertyPath: m_Colors.m_DisabledColor.b
       value: 0.3773585
       objectReference: {fileID: 0}
+    - target: {fileID: 4043366194804624145, guid: 9e59213abf703454dbb12b027f856c71,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -3887360196768347331, guid: 40964602b00f140ebb15e18d1af1ba99,
+        type: 3}
     - target: {fileID: 5250032047520341103, guid: 9e59213abf703454dbb12b027f856c71,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -1862,6 +1874,12 @@ PrefabInstance:
       propertyPath: m_TargetGraphic
       value: 
       objectReference: {fileID: 2782236463934782662}
+    - target: {fileID: 5826518060896080567, guid: 9e59213abf703454dbb12b027f856c71,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 7115731861625668581, guid: 40964602b00f140ebb15e18d1af1ba99,
+        type: 3}
     - target: {fileID: 5872926467150796587, guid: 9e59213abf703454dbb12b027f856c71,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1972,6 +1990,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Controls Panel
       objectReference: {fileID: 0}
+    - target: {fileID: 8243526215892580114, guid: 9e59213abf703454dbb12b027f856c71,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 3858229978264890582, guid: 40964602b00f140ebb15e18d1af1ba99,
+        type: 3}
     - target: {fileID: 8506977799901848615, guid: 9e59213abf703454dbb12b027f856c71,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
