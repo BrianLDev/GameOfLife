@@ -134,9 +134,9 @@ public class GridManager : MonoBehaviour {
       Vector3Int pos = new Vector3Int();
       int aliveNeighbors = 0;
 
-      Debug.Log("Grid Size = " + tilemap.size);
-      Debug.Log("Grid Bounds Min = " + tilemap.cellBounds.xMin + "," + tilemap.cellBounds.yMin);
-      Debug.Log("Grid Bounds Max = " + tilemap.cellBounds.xMax + "," + tilemap.cellBounds.yMax);
+      // Debug.Log("Grid Size = " + tilemap.size);
+      // Debug.Log("Grid Bounds Min = " + tilemap.cellBounds.xMin + "," + tilemap.cellBounds.yMin);
+      // Debug.Log("Grid Bounds Max = " + tilemap.cellBounds.xMax + "," + tilemap.cellBounds.yMax);
 
       for (int i=0; i<tilemap.size.x; i++) {
         for (int j=0; j<tilemap.size.y; j++) {
@@ -148,22 +148,24 @@ public class GridManager : MonoBehaviour {
           aliveNeighbors = CountAliveNeighbors(getTile, pos);
           // Debug.Log("At position (" + pos.x + "," + pos.y + ") found " + aliveNeighbors + " alive neighbors.");
 
+          // CHECK SURVIVAL OR BIRTH BASED ON GAME OF LIFE RULES
+          // Rules are here https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
           bool isAlive = getTile.sprite == tileAlive.sprite;
-          if (isAlive && aliveNeighbors < 2) {
-            setTile = Instantiate(tileEmpty);
-            setTile.color = Color.red;
-            tilemap.SetTile(pos, setTile);
+          if (!isAlive) { // Empty tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
+            if (aliveNeighbors == 3) {
+              setTile = Instantiate(tileAlive);
+              setTile.color = Color.green;
+              tilemap.SetTile(pos, setTile);
+            }
           }
-          else if (isAlive && aliveNeighbors > 3) {
-            setTile = Instantiate(tileEmpty);
-            setTile.color = Color.red;
-            tilemap.SetTile(pos, setTile);
+          else {  // Alive tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
+            if (aliveNeighbors < 2 || aliveNeighbors > 3) {
+              setTile = Instantiate(tileEmpty);
+              setTile.color = Color.red;
+              tilemap.SetTile(pos, setTile);
+            }
           }
-          else if (!isAlive && aliveNeighbors == 3) {
-            setTile = Instantiate(tileAlive);
-            setTile.color = Color.green;
-            tilemap.SetTile(pos, setTile);
-          }
+          
         }
       }
       yield return null;
@@ -220,7 +222,6 @@ public class GridManager : MonoBehaviour {
         }
       }
     }
-
     return neighbors;
   }
 
