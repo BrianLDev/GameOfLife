@@ -97,7 +97,6 @@ public class GridManager : MonoBehaviour {
     StopAllCoroutines();
     RecalculateGridBounds();
     Debug.Log("Randomizing mid size: " + tilemap.size + " and grid size: " + gridWidth + "," + gridHeight);
-    // Tile newTile = new Tile();
     Vector3Int pos = new Vector3Int();
     float randomFloat;
 
@@ -107,16 +106,11 @@ public class GridManager : MonoBehaviour {
         pos.y = tilemap.origin.y + j;
         randomFloat = Random.Range(0f,1f);
         if (randomFloat <= 0.9) {
-          // tileArray[i,j] = Instantiate(tileEmpty); // instantiate causes major slowdowns.  Just use copies of a prefab
-          // newTile = Instantiate(tileEmpty); // instantiate causes major slowdowns.  Just use copies of a prefab
           tilemap.SetTile(pos, tileEmpty);
         }
         else {
-          // tileArray[i,j] = Instantiate(tileAlive); // instantiate causes major slowdowns.  Just use copies of a prefab
-          // newTile = Instantiate(tileAlive); // instantiate causes major slowdowns.  Just use copies of a prefab
           tilemap.SetTile(pos, tileAlive);
         }
-        // tilemap.SetTile(pos, tileArray[i,j]);
       }
     }
   }
@@ -154,13 +148,8 @@ public class GridManager : MonoBehaviour {
     for (int g=1; g<=generations; g++) {
       Debug.Log("***** SIMULATING GENERATION " + g);
       Tile getTile = ScriptableObject.CreateInstance<Tile>();
-      // Tile setTile = new Tile();
       Vector3Int pos = new Vector3Int();
       int aliveNeighbors = 0;
-
-      // Debug.Log("Grid Size = " + tilemap.size);
-      // Debug.Log("Grid Bounds Min = " + tilemap.cellBounds.xMin + "," + tilemap.cellBounds.yMin);
-      // Debug.Log("Grid Bounds Max = " + tilemap.cellBounds.xMax + "," + tilemap.cellBounds.yMax);
 
       // Create a temp Tilemap to hold original state so incremental changes don't affect each other
       Tilemap tempTilemap = Instantiate(tilemap, tilemap.transform.position, tilemap.transform.rotation, tilemap.transform.parent);
@@ -169,29 +158,22 @@ public class GridManager : MonoBehaviour {
         for (int j=0; j<tilemap.size.y; j++) {
           pos.x = tilemap.origin.x + i;
           pos.y = tilemap.origin.y + j;
-          // tilemap.SetTileFlags(pos, TileFlags.None);  // remove tileflags so we can change color if needed. (note this changes the prefab)
           getTile = tempTilemap.GetTile<Tile>(pos);  // get copy of current tile to check alive/dead, color, etc
           aliveNeighbors = CountAliveNeighbors(getTile, pos);
-          // Debug.Log("At position (" + pos.x + "," + pos.y + ") found " + aliveNeighbors + " alive neighbors.");
 
           // CHECK SURVIVAL OR BIRTH BASED ON GAME OF LIFE RULES
           // Rules are here https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
           bool isAlive = getTile.name == tileAlive.name;
           if (isAlive) { // Alive tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
             if (aliveNeighbors < 2 || aliveNeighbors > 3) {
-              // setTile = Instantiate(tileEmpty);
-              // setTile.color = Color.red;
               tilemap.SetTile(pos, tileEmpty);
             }
           }
           else {  // Empty tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
             if (aliveNeighbors == 3) {
-              // setTile = Instantiate(tileAlive);
-              // setTile.color = Color.green;
               tilemap.SetTile(pos, tileAlive);
             }
-          }
-          
+          } 
         }
       }
       // Now that all cells have been updated, delete the copy of the original Tilemap
@@ -202,18 +184,12 @@ public class GridManager : MonoBehaviour {
   }  
 
   private int CountAliveNeighbors(Tile tile, Vector3Int pos) {
-    // Debug.Log("Counting neighbors for tile at: " + pos);
     int aliveCount = 0;
 
     Vector3Int[] neighborPositions = GetNeighborPositions(pos, tilemap);
-    // Tile lookupTile = new Tile();
 
     foreach(Vector3Int neighborPos in neighborPositions) {
-      // Debug.Log("Looking up tile at: " + neighborPos);
-      // lookupTile = tilemap.GetTile<Tile>(neighborPos);
-      // Debug.Log("Tile value: " + lookupTile);
       if(tilemap.GetTile<Tile>(neighborPos).name == tileAlive.name) {
-        // Debug.Log("Found a live one...");
         aliveCount++;
       }
     }
@@ -239,20 +215,17 @@ public class GridManager : MonoBehaviour {
     foreach (int xVal in xAxis) {
       foreach (int yVal in yAxis) {
         if(xVal == tilePos.x && yVal == tilePos.y) {
-          // Debug.Log("Skipping self");
           continue; // skip self
         }
         else {
           neighbors[neighborIndex].x = xVal;
           neighbors[neighborIndex].y = yVal;
-          // Debug.Log("Neighbor " + neighborIndex + " = (" + xVal + "," + yVal + ")");
           neighborIndex++;
         }
       }
     }
     return neighbors;
   }
-
 
   private static Vector3Int PosNorm(Vector3Int tilePos, Tilemap tmap) {  // normalized tile position adjusting for origin
     Vector3Int normalizedPos = new Vector3Int();
@@ -298,24 +271,3 @@ public class GridManager : MonoBehaviour {
     Debug.Log("Set FOV end size: " + tilemap.size + " and grid size: " + gridWidth + "," + gridHeight);
   }
 }
-
-  // NO LONGER USING THIS SCRIPT.  SAVE IN CASE I NEED TO REFERENCE IT
-  // public Tile[,] PopulateTileArray(Tilemap tmap) {
-  //   Tile[,] arrayOfTiles = new Tile[tmap.size.x, tmap.size.y];
-
-  //   Tile tile = new Tile();
-  //   Tile newTile = new Tile();
-  //   Vector3Int pos = new Vector3Int();
-
-  //   for (int i=0; i<gridWidth; i++) {
-  //     for (int j=0; j<gridHeight; j++) {
-  //       pos.x = tilemap.origin.x + i;
-  //       pos.y = tilemap.origin.y + j;
-  //       tile = tilemap.GetTile<Tile>(pos);  // get current tile to check alive/dead, color, etc
-  //       arrayOfTiles[i,j] = tile; // assigns a copy of the tile to a spot in the 2d array
-  //       // Debug.Log("Tile " + i + "," + j + " = " + tile.name);
-  //       // Debug.Log("Array of tiles " + i + "," + j + " = " + arrayOfTiles[i,j].name);
-  //     }
-  //   }
-  //   return arrayOfTiles;
-  // }
