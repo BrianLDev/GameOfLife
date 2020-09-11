@@ -13,6 +13,7 @@ public class GridManager : MonoBehaviour {
   private Tilemap savedTilemap;
   private int gridWidth = 5;
   private int gridHeight = 5;
+  private int generation = 0;
   private float targetFOV = 65;
   private Vector3 mousePosition;
 
@@ -83,6 +84,7 @@ public class GridManager : MonoBehaviour {
     Debug.Log("Clearing grid...");
     StopAllCoroutines();
     tilemap.ClearAllTiles();
+    generation = 0;
   }
 
   public void RecalculateGridBounds() {
@@ -93,10 +95,9 @@ public class GridManager : MonoBehaviour {
   }
 
   public void Randomize() {
-    Debug.Log("Randomizing start size: " + tilemap.size + " and grid size: " + gridWidth + "," + gridHeight);
+    generation = 0;
     StopAllCoroutines();
     RecalculateGridBounds();
-    Debug.Log("Randomizing mid size: " + tilemap.size + " and grid size: " + gridWidth + "," + gridHeight);
     Vector3Int pos = new Vector3Int();
     float randomFloat;
 
@@ -105,7 +106,7 @@ public class GridManager : MonoBehaviour {
         pos.x = tilemap.origin.x + i;
         pos.y = tilemap.origin.y + j;
         randomFloat = Random.Range(0f,1f);
-        if (randomFloat <= 0.9) {
+        if (randomFloat <= 0.93) {
           tilemap.SetTile(pos, tileEmpty);
         }
         else {
@@ -137,16 +138,18 @@ public class GridManager : MonoBehaviour {
     // restores to copy of initial tilemap and makes a new copy
     if (tilemap != null)
       Destroy(tilemap.gameObject);
-
     tilemap = Instantiate(savedTilemap, savedTilemap.transform.position, savedTilemap.transform.rotation, savedTilemap.transform.parent);
     tilemap.name = "Tilemap";
     tilemap.gameObject.SetActive(true); // make sure it's visible
     RecalculateGridBounds();
+    generation = 0;
   }
 
   public IEnumerator Simulate(int generations=1) {
+    bool steadyState = true;
     for (int g=1; g<=generations; g++) {
-      Debug.Log("***** SIMULATING GENERATION " + g);
+      generation++;
+      Debug.Log("***** SIMULATING GENERATION " + generation);
       Tile getTile = ScriptableObject.CreateInstance<Tile>();
       Vector3Int pos = new Vector3Int();
       int aliveNeighbors = 0;
@@ -167,17 +170,25 @@ public class GridManager : MonoBehaviour {
           if (isAlive) { // Alive tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
             if (aliveNeighbors < 2 || aliveNeighbors > 3) {
               tilemap.SetTile(pos, tileEmpty);
+              steadyState = false;
             }
           }
           else {  // Empty tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
             if (aliveNeighbors == 3) {
               tilemap.SetTile(pos, tileAlive);
+              steadyState = false;
             }
           } 
         }
       }
+      // if nothing was changed this round (reached steady state), stop simulation
+      if (steadyState == true) {
+        StopAllCoroutines();
+      }
+
       // Now that all cells have been updated, delete the copy of the original Tilemap
       Destroy(tempTilemap.gameObject);
+
       yield return null;
     }
     yield return null;
@@ -242,7 +253,6 @@ public class GridManager : MonoBehaviour {
   }
 
   private void SetCameraFOV() {
-    Debug.Log("Set FOV start size: " + tilemap.size + " and grid size: " + gridWidth + "," + gridHeight);
     // TODO: Automate this if possible and if there's time.  For now, it works. 
     RecalculateGridBounds();
 
@@ -268,6 +278,5 @@ public class GridManager : MonoBehaviour {
       targetFOV = 175.5f;  
     else if(gridWidth <= 750 && gridHeight <= 500)
       targetFOV = 176.5f;  
-    Debug.Log("Set FOV end size: " + tilemap.size + " and grid size: " + gridWidth + "," + gridHeight);
   }
 }
