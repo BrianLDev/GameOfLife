@@ -11,8 +11,8 @@ public class GridManager : MonoBehaviour {
   private Tile tileTemp, tilePrev;
   // public TmapTile smartTile;   // not used in this version.  Keep for possible future use
   private Tilemap savedTilemap;
-  private int gridWidth = 50;
-  private int gridHeight = 50;
+  private int gridWidth = 75;
+  private int gridHeight = 75;
   private float targetFOV = 65;
   private Vector3 mousePosition, mouseWorldPos;
 
