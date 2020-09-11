@@ -8,8 +8,9 @@ public class GridManager : MonoBehaviour {
   public GridLayout grid;
   public Tilemap tilemap;
   public Tile tileEmpty, tileSelected, tileAlive;
+  private Tile tileTemp;
   // public TmapTile smartTile;   // not used in this version.  Keep for possible future use
-  private Tilemap initialTilemap;
+  private Tilemap savedTilemap;
   private int gridWidth = 5;
   private int gridHeight = 5;
   private float targetFOV = 65;
@@ -25,16 +26,23 @@ public class GridManager : MonoBehaviour {
   }
 
   private void Start() {
-    SaveGridLayout();
+    SaveLayout();
     SetCameraFOV();
   }
 
   private void Update() {
-
-    mousePosition = mainCamera.ScreenPointToRay(Input.mousePosition).GetPoint(10);
+    // Modify tiles with mouse
+    mousePosition = Input.mousePosition;
+    mousePosition.z = 10; // need to set the z value or else converting to world point will always be at 0, 0
+    Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(mousePosition);
     if (Input.GetMouseButtonDown(0)) {
-      Debug.Log("Clicked at " + mousePosition);
-      tilemap.SetTile(tilemap.WorldToCell(mousePosition), tileAlive);
+      tileTemp = tilemap.GetTile<Tile>(tilemap.WorldToCell(mouseWorldPos));
+      if (tileTemp && tileTemp.name == tileEmpty.name) {
+        tilemap.SetTile(tilemap.WorldToCell(mouseWorldPos), tileAlive);
+      }
+      else if (tileTemp && tileTemp.name == tileAlive.name) {
+        tilemap.SetTile(tilemap.WorldToCell(mouseWorldPos), tileEmpty);
+      }
     }
 
     // Smooth transition camera to target zoom
@@ -43,16 +51,18 @@ public class GridManager : MonoBehaviour {
     }
   }
 
-  public void SetWidth(int widthIndex) {
-    if (widthIndex==0) { gridWidth = 5; }
+  public void SetWidth(int widthIndex) {  // This is called directly from the UI
+    if (widthIndex==0)
+      gridWidth = 5;
     else if (widthIndex <=19)
       gridWidth = (widthIndex+1)*5;   // increments of 5 from 5 to 100 (index 0 to 19)
     else
       gridWidth = (widthIndex-17)*50; // increments of 50 from 150 to 500 (index 20 to 27)
   }
 
-  public void SetHeight(int heightIndex) {
-    if (heightIndex==0) { gridHeight = 5; }
+  public void SetHeight(int heightIndex) {  // This is called directly from the UI
+    if (heightIndex==0)
+      gridHeight = 5;
     else if (heightIndex <= 19)
       gridHeight = (heightIndex+1)*5;   // increments of 5 from 5 to 100 (index 0 to 19)
     else if (heightIndex >= 20)
@@ -78,12 +88,15 @@ public class GridManager : MonoBehaviour {
   public void RecalculateGridBounds() {
     tilemap.CompressBounds(); 
     tilemap.ResizeBounds();
-    gridWidth = tilemap.size[0];
-    gridHeight = tilemap.size[1];
+    gridWidth = tilemap.size.x;
+    gridHeight = tilemap.size.y;
   }
 
   public void Randomize() {
+    Debug.Log("Randomizing start size: " + tilemap.size + " and grid size: " + gridWidth + "," + gridHeight);
     StopAllCoroutines();
+    RecalculateGridBounds();
+    Debug.Log("Randomizing mid size: " + tilemap.size + " and grid size: " + gridWidth + "," + gridHeight);
     // Tile newTile = new Tile();
     Vector3Int pos = new Vector3Int();
     float randomFloat;
@@ -108,17 +121,18 @@ public class GridManager : MonoBehaviour {
     }
   }
 
-  public void SaveGridLayout() {
-    // saves duplicate copy of initial tilemap to restore to later
-    if(initialTilemap != null)
-      Destroy(initialTilemap.gameObject);
+  public void SaveLayout() {
+    // SaveLayout() saves a duplicate copy of initial tilemap to restore to later
+    RecalculateGridBounds(); // resize bounds to make sure they're updated
+    if(savedTilemap != null)
+      Destroy(savedTilemap.gameObject);
     
-    initialTilemap = Instantiate(tilemap, tilemap.transform.position, tilemap.transform.rotation, tilemap.transform.parent);
-    initialTilemap.name = "Tilemap Initial State";
-    initialTilemap.gameObject.SetActive(false); // make sure it's not visible
+    savedTilemap = Instantiate(tilemap, tilemap.transform.position, tilemap.transform.rotation, tilemap.transform.parent);
+    savedTilemap.name = "Tilemap Initial State";
+    savedTilemap.gameObject.SetActive(false); // make sure it's not visible
   }
 
-  public void RestoreGridLayout() {
+  public void RestoreLayout() {
     Debug.Log("Restoring grid to previous state...");
     StopAllCoroutines();
     RestoreTilemap();
@@ -130,7 +144,7 @@ public class GridManager : MonoBehaviour {
     if (tilemap != null)
       Destroy(tilemap.gameObject);
 
-    tilemap = Instantiate(initialTilemap, initialTilemap.transform.position, initialTilemap.transform.rotation, initialTilemap.transform.parent);
+    tilemap = Instantiate(savedTilemap, savedTilemap.transform.position, savedTilemap.transform.rotation, savedTilemap.transform.parent);
     tilemap.name = "Tilemap";
     tilemap.gameObject.SetActive(true); // make sure it's visible
     RecalculateGridBounds();
@@ -255,6 +269,7 @@ public class GridManager : MonoBehaviour {
   }
 
   private void SetCameraFOV() {
+    Debug.Log("Set FOV start size: " + tilemap.size + " and grid size: " + gridWidth + "," + gridHeight);
     // TODO: Automate this if possible and if there's time.  For now, it works. 
     RecalculateGridBounds();
 
@@ -280,6 +295,7 @@ public class GridManager : MonoBehaviour {
       targetFOV = 175.5f;  
     else if(gridWidth <= 750 && gridHeight <= 500)
       targetFOV = 176.5f;  
+    Debug.Log("Set FOV end size: " + tilemap.size + " and grid size: " + gridWidth + "," + gridHeight);
   }
 }
 

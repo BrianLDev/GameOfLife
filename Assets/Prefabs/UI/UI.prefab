@@ -1241,7 +1241,7 @@ PrefabInstance:
     - target: {fileID: 8893863317019968391, guid: 7456331c4540f4292ba5ba076218feae,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: RestoreGridLayout
+      value: RestoreLayout
       objectReference: {fileID: 0}
     - target: {fileID: 8893863317511506840, guid: 7456331c4540f4292ba5ba076218feae,
         type: 3}
@@ -1671,7 +1671,7 @@ PrefabInstance:
     - target: {fileID: 8893863317019968391, guid: 7456331c4540f4292ba5ba076218feae,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SaveGridLayout
+      value: SaveLayout
       objectReference: {fileID: 0}
     - target: {fileID: 8893863317511506840, guid: 7456331c4540f4292ba5ba076218feae,
         type: 3}

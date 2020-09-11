@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour {
         simulationRunning = true;
         HideUI();
         if(!simulationPaused) {
-            gridManager.SaveGridLayout();   // save initial layout in case we need to reset back to it
+            gridManager.SaveLayout();   // save initial layout in case we need to reset back to it
         }
         simulationPaused = false;
         StartCoroutine(gridManager.Simulate(9999));
