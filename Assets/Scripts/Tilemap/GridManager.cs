@@ -11,8 +11,8 @@ public class GridManager : MonoBehaviour {
   private Tile tileTemp, tilePrev;
   // public TmapTile smartTile;   // not used in this version.  Keep for possible future use
   private Tilemap savedTilemap;
-  private int gridWidth = 5;
-  private int gridHeight = 5;
+  private int gridWidth = 50;
+  private int gridHeight = 50;
   private float targetFOV = 65;
   private Vector3 mousePosition, mouseWorldPos;
 
@@ -26,6 +26,8 @@ public class GridManager : MonoBehaviour {
   }
 
   private void Start() {
+    CreateGridLayout();
+    Randomize();
     SaveLayout();
     SetCameraFOV();
   }
@@ -262,7 +264,7 @@ public class GridManager : MonoBehaviour {
     if(gridWidth <= 20 && gridHeight <= 10)
       targetFOV = 65;
     else if(gridWidth <= 30 && gridHeight <= 20)
-      targetFOV = 100;
+      targetFOV = 101;
     else if(gridWidth <= 45 && gridHeight <= 30)
       targetFOV = 120;
     else if(gridWidth <= 60 && gridHeight <= 40)

@@ -233,7 +233,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2098200158}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.25, y: 1.9, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 888299265}
@@ -2738,11 +2738,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 545101879580094208, guid: 881bc153615424453b1f5cb3b8045b42,
         type: 3}
-      propertyPath: m_Options.m_Options.Array.size
-      value: 21
-      objectReference: {fileID: 0}
-    - target: {fileID: 545101879580094208, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 126451190}
@@ -2766,11 +2761,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 126451190}
-    - target: {fileID: 4789416161692399325, guid: 881bc153615424453b1f5cb3b8045b42,
-        type: 3}
-      propertyPath: m_Options.m_Options.Array.size
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 4789416161692399325, guid: 881bc153615424453b1f5cb3b8045b42,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -2968,11 +2958,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4327725167387440361, guid: b3d0a133987ca4bc98a0e18215d94e4f,
-        type: 3}
-      propertyPath: m_AllowDynamicResolution
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4327725167387440363, guid: b3d0a133987ca4bc98a0e18215d94e4f,
         type: 3}
