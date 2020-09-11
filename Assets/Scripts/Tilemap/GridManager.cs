@@ -134,15 +134,19 @@ public class GridManager : MonoBehaviour {
       Vector3Int pos = new Vector3Int();
       int aliveNeighbors = 0;
 
+      Debug.Log("***** SIMULATING GENERATION " + g);
       // Debug.Log("Grid Size = " + tilemap.size);
       // Debug.Log("Grid Bounds Min = " + tilemap.cellBounds.xMin + "," + tilemap.cellBounds.yMin);
       // Debug.Log("Grid Bounds Max = " + tilemap.cellBounds.xMax + "," + tilemap.cellBounds.yMax);
+
+      // Make a copy of the tilemap that we will be editing so that incremental edits don't affect calculations in same gen
+      Tilemap tempTilemap = Instantiate(tilemap, tilemap.transform.position, tilemap.transform.rotation, tilemap.transform.parent);
 
       for (int i=0; i<tilemap.size.x; i++) {
         for (int j=0; j<tilemap.size.y; j++) {
           pos.x = tilemap.origin.x + i;
           pos.y = tilemap.origin.y + j;
-          tilemap.SetTileFlags(pos, TileFlags.None);  // remove tileflags so we can change color
+          // tilemap.SetTileFlags(pos, TileFlags.None);  // remove tileflags so we can change color if needed. (note this changes the prefab)
           getTile = tilemap.GetTile<Tile>(pos);  // get copy of current tile to check alive/dead, color, etc
 
           aliveNeighbors = CountAliveNeighbors(getTile, pos);
@@ -151,23 +155,32 @@ public class GridManager : MonoBehaviour {
           // CHECK SURVIVAL OR BIRTH BASED ON GAME OF LIFE RULES
           // Rules are here https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
           bool isAlive = getTile.sprite == tileAlive.sprite;
-          if (!isAlive) { // Empty tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
-            if (aliveNeighbors == 3) {
-              setTile = Instantiate(tileAlive);
-              setTile.color = Color.green;
-              tilemap.SetTile(pos, setTile);
-            }
-          }
-          else {  // Alive tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
+          if (isAlive) { // Alive tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
             if (aliveNeighbors < 2 || aliveNeighbors > 3) {
-              setTile = Instantiate(tileEmpty);
-              setTile.color = Color.red;
-              tilemap.SetTile(pos, setTile);
+              // setTile = Instantiate(tileEmpty);
+              // setTile.color = Color.red;
+              tempTilemap.SetTile(pos, tileEmpty);
+            }
+
+          }
+          else {  // Empty tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
+            if (aliveNeighbors == 3) {
+              // setTile = Instantiate(tileAlive);
+              // setTile.color = Color.green;
+              tempTilemap.SetTile(pos, tileAlive);
             }
           }
           
         }
       }
+      // Now that all cells have been updated on the tempTilemap, swap all changes to tilemap at once
+      Tilemap deleteOldTilemap = tilemap;
+      // tilemap.GetComponent<TilemapRenderer>().
+      tilemap = tempTilemap;
+      
+      Destroy(deleteOldTilemap);
+      // tilemap = Instantiate(tempTilemap, tempTilemap.transform.position, tempTilemap.transform.rotation, tempTilemap.transform.parent);
+      // Destroy(tempTilemap);
       yield return null;
     }
     yield return null;
@@ -178,13 +191,13 @@ public class GridManager : MonoBehaviour {
     int aliveCount = 0;
 
     Vector3Int[] neighborPositions = GetNeighborPositions(pos, tilemap);
-    Tile lookupTile = new Tile();
+    // Tile lookupTile = new Tile();
 
     foreach(Vector3Int neighborPos in neighborPositions) {
       // Debug.Log("Looking up tile at: " + neighborPos);
-      lookupTile = tilemap.GetTile<Tile>(neighborPos);
+      // lookupTile = tilemap.GetTile<Tile>(neighborPos);
       // Debug.Log("Tile value: " + lookupTile);
-      if(lookupTile.sprite == tileAlive.sprite) {
+      if(tilemap.GetTile<Tile>(neighborPos).name == tileAlive.name) {
         // Debug.Log("Found a live one...");
         aliveCount++;
       }
