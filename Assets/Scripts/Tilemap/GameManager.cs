@@ -4,12 +4,19 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
+    public static GameManager Instance;    // singleton
     public GameObject menuPanel, menuToggler;
     public GridManager gridManager;
-    private bool simulationRunning = false;
-    private bool simulationPaused = false;
+    public bool simulationRunning = false;
+    public bool simulationPaused = false;
+    public int generation = 0;
 
     private void Awake() {
+        if (Instance) {
+            Destroy(this);
+        } else {
+            Instance = this;
+        }
         if (!menuPanel)
             menuPanel = GameObject.Find("Menu Panel");
         if (!menuToggler)
@@ -29,23 +36,23 @@ public class GameManager : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Space)) {
             if (simulationRunning)
-                SimStop();
+                SimPause();
             else {
                 SimStart();
             }
         }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
-            StartCoroutine(gridManager.Simulate(1));
+            SimStep();
     }
 
     public void SimStart() {
         Debug.Log("Starting sim...");
-        simulationRunning = true;
         HideUI();
         if(!simulationPaused) {
             gridManager.SaveLayout();   // save initial layout in case we need to reset back to it
         }
+        simulationRunning = true;
         simulationPaused = false;
         StartCoroutine(gridManager.Simulate(9999));
     }
@@ -63,12 +70,15 @@ public class GameManager : MonoBehaviour {
         HideUI();
         StartCoroutine(gridManager.Simulate(1));
         simulationRunning = false;
+        simulationPaused = true;
     }
 
     public void SimStop() {
-        Debug.Log("Stopping sim...");
+        Debug.Log("Stopping sim and restarting to gen 0...");
         simulationRunning = false;
+        simulationPaused = false;
         StopAllCoroutines();
+        generation = 0;
     }
 
     public void ToggleUI() {

@@ -8,14 +8,13 @@ public class GridManager : MonoBehaviour {
   public GridLayout grid;
   public Tilemap tilemap;
   public Tile tileEmpty, tileSelected, tileAlive;
-  private Tile tileTemp;
+  private Tile tileTemp, tilePrev;
   // public TmapTile smartTile;   // not used in this version.  Keep for possible future use
   private Tilemap savedTilemap;
   private int gridWidth = 5;
   private int gridHeight = 5;
-  private int generation = 0;
   private float targetFOV = 65;
-  private Vector3 mousePosition;
+  private Vector3 mousePosition, mouseWorldPos;
 
   private void Awake() {
     if(!mainCamera)
@@ -32,23 +31,32 @@ public class GridManager : MonoBehaviour {
   }
 
   private void Update() {
-    // Modify tiles with mouse
-    mousePosition = Input.mousePosition;
-    mousePosition.z = 10; // need to set the z value or else converting to world point will always be at 0, 0
-    Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(mousePosition);
-    if (Input.GetMouseButtonDown(0)) {
-      tileTemp = tilemap.GetTile<Tile>(tilemap.WorldToCell(mouseWorldPos));
-      if (tileTemp && tileTemp.name == tileEmpty.name) {
-        tilemap.SetTile(tilemap.WorldToCell(mouseWorldPos), tileAlive);
-      }
-      else if (tileTemp && tileTemp.name == tileAlive.name) {
-        tilemap.SetTile(tilemap.WorldToCell(mouseWorldPos), tileEmpty);
-      }
-    }
-
     // Smooth transition camera to target zoom
     if ((mainCamera.fieldOfView <= targetFOV*.995) || (mainCamera.fieldOfView >= targetFOV*1.005)) {
       mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, targetFOV, Time.deltaTime*3.5f);
+    }
+
+    // Modify tiles with mouse
+    if (!GameManager.Instance.simulationRunning) {
+      mousePosition = Input.mousePosition;
+      mousePosition.z = 10; // need to set the z value or else converting to world point will always be at 0, 0
+      mouseWorldPos = mainCamera.ScreenToWorldPoint(mousePosition);
+        tilePrev = tilemap.GetTile<Tile>(tilemap.WorldToCell(mouseWorldPos));
+
+      // TODO: temporarily show "selected" tile when mouse hovers over a tile
+      // if (tilePrev) {
+      //   tilemap.SetTile(tilemap.WorldToCell(mouseWorldPos), tileSelected);
+      // }
+
+      if (Input.GetMouseButtonDown(0)) {
+        tileTemp = tilemap.GetTile<Tile>(tilemap.WorldToCell(mouseWorldPos));
+        if (tileTemp && tileTemp.name == tileEmpty.name) {
+          tilemap.SetTile(tilemap.WorldToCell(mouseWorldPos), tileAlive);
+        }
+        else if (tileTemp && tileTemp.name == tileAlive.name) {
+          tilemap.SetTile(tilemap.WorldToCell(mouseWorldPos), tileEmpty);
+        }
+      }
     }
   }
 
@@ -71,7 +79,6 @@ public class GridManager : MonoBehaviour {
   }
 
   public void CreateGridLayout() {
-    StopAllCoroutines();
     ClearGrid();
     Debug.Log("Creating a " + gridWidth + " x " + gridHeight + " grid.");
     tilemap.size = new Vector3Int(gridWidth, gridHeight, 1);
@@ -82,9 +89,9 @@ public class GridManager : MonoBehaviour {
 
   public void ClearGrid() {
     Debug.Log("Clearing grid...");
-    StopAllCoroutines();
+    GameManager.Instance.SimStop();
     tilemap.ClearAllTiles();
-    generation = 0;
+    GameManager.Instance.generation = 0;
   }
 
   public void RecalculateGridBounds() {
@@ -95,8 +102,8 @@ public class GridManager : MonoBehaviour {
   }
 
   public void Randomize() {
-    generation = 0;
-    StopAllCoroutines();
+    Debug.Log("Randomizing grid...");
+    GameManager.Instance.SimStop();
     RecalculateGridBounds();
     Vector3Int pos = new Vector3Int();
     float randomFloat;
@@ -129,7 +136,7 @@ public class GridManager : MonoBehaviour {
 
   public void RestoreLayout() {
     Debug.Log("Restoring grid to previous state...");
-    StopAllCoroutines();
+    GameManager.Instance.SimStop();
     RestoreTilemap();
     SetCameraFOV();
   }
@@ -142,14 +149,12 @@ public class GridManager : MonoBehaviour {
     tilemap.name = "Tilemap";
     tilemap.gameObject.SetActive(true); // make sure it's visible
     RecalculateGridBounds();
-    generation = 0;
   }
 
   public IEnumerator Simulate(int generations=1) {
-    bool steadyState = true;
     for (int g=1; g<=generations; g++) {
-      generation++;
-      Debug.Log("***** SIMULATING GENERATION " + generation);
+      GameManager.Instance.generation++;
+      Debug.Log("***** SIMULATING GENERATION " + GameManager.Instance.generation);
       Tile getTile = ScriptableObject.CreateInstance<Tile>();
       Vector3Int pos = new Vector3Int();
       int aliveNeighbors = 0;
@@ -170,21 +175,19 @@ public class GridManager : MonoBehaviour {
           if (isAlive) { // Alive tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
             if (aliveNeighbors < 2 || aliveNeighbors > 3) {
               tilemap.SetTile(pos, tileEmpty);
-              steadyState = false;
             }
           }
           else {  // Empty tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
             if (aliveNeighbors == 3) {
               tilemap.SetTile(pos, tileAlive);
-              steadyState = false;
             }
           } 
         }
       }
       // if nothing was changed this round (reached steady state), stop simulation
-      if (steadyState == true) {
-        StopAllCoroutines();
-      }
+      // if (steadyState == true) {
+      //   StopSim();
+      // }
 
       // Now that all cells have been updated, delete the copy of the original Tilemap
       Destroy(tempTilemap.gameObject);
