@@ -13,6 +13,7 @@ public class GridManager : MonoBehaviour {
   private int gridWidth = 5;
   private int gridHeight = 5;
   private float targetFOV = 65;
+  private Vector3 mousePosition;
 
   private void Awake() {
     if(!mainCamera)
@@ -29,6 +30,14 @@ public class GridManager : MonoBehaviour {
   }
 
   private void Update() {
+
+    mousePosition = mainCamera.ScreenPointToRay(Input.mousePosition).GetPoint(10);
+    if (Input.GetMouseButtonDown(0)) {
+      Debug.Log("Clicked at " + mousePosition);
+      tilemap.SetTile(tilemap.WorldToCell(mousePosition), tileAlive);
+    }
+
+    // Smooth transition camera to target zoom
     if ((mainCamera.fieldOfView <= targetFOV*.995) || (mainCamera.fieldOfView >= targetFOV*1.005)) {
       mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, targetFOV, Time.deltaTime*3.5f);
     }

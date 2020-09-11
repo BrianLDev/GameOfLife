@@ -1370,7 +1370,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 3
-      m_TileSpriteIndex: 2
+      m_TileSpriteIndex: 1
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -1865,7 +1865,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 3
-      m_TileSpriteIndex: 2
+      m_TileSpriteIndex: 1
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -2612,10 +2612,10 @@ Tilemap:
   m_TileSpriteArray:
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 231
+  - m_RefCount: 233
     m_Data: {fileID: 5788474513386182867, guid: 1b0f63767223f40969d283880604087e,
       type: 3}
-  - m_RefCount: 25
+  - m_RefCount: 23
     m_Data: {fileID: 4413202439940657481, guid: 1b0f63767223f40969d283880604087e,
       type: 3}
   m_TileMatrixArray:
@@ -2671,6 +2671,76 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 545101877552736933, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736933, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736933, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736933, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736933, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736933, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736933, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736933, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736933, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736933, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736933, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736933, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736934, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_RenderMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 545101877552736934, guid: 881bc153615424453b1f5cb3b8045b42,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1086006850}
     - target: {fileID: 545101877558893360, guid: 881bc153615424453b1f5cb3b8045b42,
         type: 3}
       propertyPath: m_Name
@@ -2953,6 +3023,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4327725167387440361, guid: b3d0a133987ca4bc98a0e18215d94e4f,
+        type: 3}
+      propertyPath: m_AllowDynamicResolution
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4327725167387440363, guid: b3d0a133987ca4bc98a0e18215d94e4f,
         type: 3}
