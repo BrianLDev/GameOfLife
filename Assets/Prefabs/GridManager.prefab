@@ -49,3 +49,5 @@ MonoBehaviour:
   tileEmpty: {fileID: 11400000, guid: 9ad97b64a5cf742faadc2eb1e23af164, type: 2}
   tileSelected: {fileID: 11400000, guid: cb5027ac0561341a4b73c47e3b1f8e40, type: 2}
   tileAlive: {fileID: 11400000, guid: 0270ed91561ed4911b2fb9a288f38d53, type: 2}
+  btnDownAlive: 0
+  btnDownEmpty: 0

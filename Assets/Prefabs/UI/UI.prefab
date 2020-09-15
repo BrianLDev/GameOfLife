@@ -626,10 +626,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7836186397488786195}
     m_Modifications:
+    - target: {fileID: 5037271624767899913, guid: 0c04bd48bb3814f7b82c0a1ae784382e,
+        type: 3}
+      propertyPath: m_Text
+      value: 75
+      objectReference: {fileID: 0}
     - target: {fileID: 5037271625190218736, guid: 0c04bd48bb3814f7b82c0a1ae784382e,
         type: 3}
       propertyPath: m_Options.m_Options.Array.size
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5037271625190218736, guid: 0c04bd48bb3814f7b82c0a1ae784382e,
+        type: 3}
+      propertyPath: m_Value
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 5037271625190218737, guid: 0c04bd48bb3814f7b82c0a1ae784382e,
         type: 3}
@@ -1406,6 +1416,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7836186397488786195}
     m_Modifications:
+    - target: {fileID: 5037271624767899913, guid: 0c04bd48bb3814f7b82c0a1ae784382e,
+        type: 3}
+      propertyPath: m_Text
+      value: 75
+      objectReference: {fileID: 0}
     - target: {fileID: 5037271624963254802, guid: 0c04bd48bb3814f7b82c0a1ae784382e,
         type: 3}
       propertyPath: m_Text
@@ -1420,6 +1435,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetWidth
+      objectReference: {fileID: 0}
+    - target: {fileID: 5037271625190218736, guid: 0c04bd48bb3814f7b82c0a1ae784382e,
+        type: 3}
+      propertyPath: m_Value
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 5037271625190218737, guid: 0c04bd48bb3814f7b82c0a1ae784382e,
         type: 3}

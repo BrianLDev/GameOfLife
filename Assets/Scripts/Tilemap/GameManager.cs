@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour {
             SimStep();
     }
 
+
     public void SimStart() {
         Debug.Log("Starting sim...");
         HideUI();
