@@ -58,24 +58,31 @@ public class GridManager : MonoBehaviour {
       else if (Input.GetMouseButtonUp(1))
         btnDownEmpty = false;
 
-      mousePosition = Input.mousePosition;
-      mousePosition.z = 10; // need to set the z value or else converting to world point will always be at 0, 0
-      mouseWorldPos = mainCamera.ScreenToWorldPoint(mousePosition);
-      mouseTilemapPos = tilemap.WorldToCell(mouseWorldPos);
+      mouseTilemapPos = GetMouseTilePos();
+      
       if (tilemap.cellBounds.Contains(mouseTilemapPos)) {
-        if (btnDownAlive)
-          tilemap.SetTile(tilemap.WorldToCell(mouseWorldPos), tileAlive);
-        else if (btnDownEmpty)
-          tilemap.SetTile(tilemap.WorldToCell(mouseWorldPos), tileEmpty);
+        if (btnDownAlive) {
+          // tileTemp.gameObject.SetActive(false); // hide mouse hover tile while painting
+          tilemap.SetTile(mouseTilemapPos, tileAlive);
+        }
+        else if (btnDownEmpty) {
+          // tileTemp.gameObject.SetActive(false); // hide mouse hover tile while painting
+          tilemap.SetTile(mouseTilemapPos, tileEmpty);
+        }
         else {
-          // TODO: temporarily show "selected" tile when mouse hovers over a tile
-          // tilePrev = tilemap.GetTile<Tile>(tilemap.WorldToCell(mouseWorldPos));
-          // if (tilePrev) {
-          //   tilemap.SetTile(tilemap.WorldToCell(mouseWorldPos), tileSelected);
-          // }
+          // tileTemp.gameObject.SetActive(true); // show mouse hover tile while not painting
+          // TODO: show tileSelected when mouse is hovering over a tilemap, but retain original tile
         }
       }
     }
+  }
+
+  public Vector3Int GetMouseTilePos() {
+    mousePosition = Input.mousePosition;
+    mousePosition.z = 10; // need to set the z value or else converting to world point will always be at 0, 0
+    mouseWorldPos = mainCamera.ScreenToWorldPoint(mousePosition);
+    mouseTilemapPos = tilemap.WorldToCell(mouseWorldPos);  
+    return mouseTilemapPos;
   }
 
   public void SetWidth(int widthIndex) {  // This is called directly from the UI
@@ -185,7 +192,7 @@ public class GridManager : MonoBehaviour {
           pos.x = tilemap.origin.x + i;
           pos.y = tilemap.origin.y + j;
           getTile = tempTilemap.GetTile<Tile>(pos);  // get copy of current tile to check alive/dead, color, etc
-          aliveNeighbors = CountAliveNeighbors(getTile, pos);
+          aliveNeighbors = CountAliveNeighbors(pos);
 
           // CHECK SURVIVAL OR BIRTH BASED ON GAME OF LIFE RULES
           // Rules are here https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
@@ -215,9 +222,11 @@ public class GridManager : MonoBehaviour {
     yield return null;
   }  
 
-  private int CountAliveNeighbors(Tile tile, Vector3Int pos) {
-    int aliveCount = 0;
+  private int CountAliveNeighbors(Vector3Int pos) {
+    // System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();  // to check time function takes to run
+    // stopwatch.Start();
 
+    int aliveCount = 0;
     Vector3Int[] neighborPositions = GetNeighborPositions(pos, tilemap);
 
     foreach(Vector3Int neighborPos in neighborPositions) {
@@ -225,6 +234,10 @@ public class GridManager : MonoBehaviour {
         aliveCount++;
       }
     }
+    // stopwatch.Stop();
+    // Debug.Log("CountAliveNeighbors time taken: " + stopwatch.Elapsed);
+    Debug.Log("Tile at " + pos + " alive neighbors = " + aliveCount);
+    
     return aliveCount;
   }
 
