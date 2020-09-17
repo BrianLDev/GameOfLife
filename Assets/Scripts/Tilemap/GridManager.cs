@@ -16,7 +16,7 @@ public class GridManager : MonoBehaviour {
   private Tile tileTemp;  // to temporarily show tileSelected where the mouse is hovering
   private Tilemap savedTilemap;
   private int gridWidth = 75;
-  private int gridHeight = 75;
+  private int gridHeight = 50;
   private float targetFOV = 65;
   private Vector3 mousePosition, mouseWorldPos;
   private Vector3Int mouseTilemapPos;
@@ -100,7 +100,7 @@ public class GridManager : MonoBehaviour {
     else if (heightIndex <= 19)
       gridHeight = (heightIndex+1)*5;   // increments of 5 from 5 to 100 (index 0 to 19)
     else if (heightIndex >= 20)
-      gridHeight = (heightIndex-17)*50; // increments of 50 from 150 to 500 (index 20 to 27)
+      gridHeight = (heightIndex-17)*50; // increments of 50 from 150 to 500 (index 20+)
   }
 
   public void CreateGridLayout() {
@@ -178,6 +178,9 @@ public class GridManager : MonoBehaviour {
 
   public IEnumerator Simulate(int generations=1) {
     for (int g=1; g<=generations; g++) {
+    // System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();  // to check time function takes to run
+    // stopwatch.Start();
+
       GameManager.Instance.generation++;
       Debug.Log("***** SIMULATING GENERATION " + GameManager.Instance.generation);
       Tile getTile = ScriptableObject.CreateInstance<Tile>();
@@ -192,11 +195,12 @@ public class GridManager : MonoBehaviour {
           pos.x = tilemap.origin.x + i;
           pos.y = tilemap.origin.y + j;
           getTile = tempTilemap.GetTile<Tile>(pos);  // get copy of current tile to check alive/dead, color, etc
-          aliveNeighbors = CountAliveNeighbors(pos);
+          bool isAlive = getTile.name == tileAlive.name;
+
+          aliveNeighbors = CountAliveNeighbors(pos, tempTilemap);
 
           // CHECK SURVIVAL OR BIRTH BASED ON GAME OF LIFE RULES
           // Rules are here https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
-          bool isAlive = getTile.name == tileAlive.name;
           if (isAlive) { // Alive tiles. Use separate if statements for empty/alive to minimize the number of "if" checks.
             if (aliveNeighbors < 2 || aliveNeighbors > 3) {
               tilemap.SetTile(pos, tileEmpty);
@@ -209,35 +213,25 @@ public class GridManager : MonoBehaviour {
           } 
         }
       }
-      // if nothing was changed this round (reached steady state), stop simulation
-      // if (steadyState == true) {
-      //   StopSim();
-      // }
 
       // Now that all cells have been updated, delete the copy of the original Tilemap
       Destroy(tempTilemap.gameObject);
-
+      // stopwatch.Stop();
+      // Debug.Log("CountAliveNeighbors time taken: " + stopwatch.Elapsed);
       yield return null;
     }
     yield return null;
   }  
 
-  private int CountAliveNeighbors(Vector3Int pos) {
-    // System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();  // to check time function takes to run
-    // stopwatch.Start();
-
+  private int CountAliveNeighbors(Vector3Int pos, Tilemap tmap) {
     int aliveCount = 0;
-    Vector3Int[] neighborPositions = GetNeighborPositions(pos, tilemap);
+    Vector3Int[] neighborPositions = GetNeighborPositions(pos, tmap);
 
     foreach(Vector3Int neighborPos in neighborPositions) {
-      if(tilemap.GetTile<Tile>(neighborPos).name == tileAlive.name) {
+      if(tmap.GetTile<Tile>(neighborPos).name == tileAlive.name) {
         aliveCount++;
       }
-    }
-    // stopwatch.Stop();
-    // Debug.Log("CountAliveNeighbors time taken: " + stopwatch.Elapsed);
-    Debug.Log("Tile at " + pos + " alive neighbors = " + aliveCount);
-    
+    }    
     return aliveCount;
   }
 
