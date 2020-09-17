@@ -45,7 +45,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   menuPanel: {fileID: 0}
   menuToggler: {fileID: 0}
-  gridManager: {fileID: 0}
-  simulationRunning: 0
-  simulationPaused: 0
-  generation: 0
+  textUIGen: {fileID: 0}

@@ -10,8 +10,6 @@ public class GridManager : MonoBehaviour {
   public Tilemap tilemap;
   public Tile tileEmpty, tileSelected, tileAlive;
   // private TmapTile smartTile;   // not used in this version.  Keep for possible future use
-  public bool btnDownAlive = false;
-  public bool btnDownEmpty = false;
 
   private Tile tileTemp;  // to temporarily show tileSelected where the mouse is hovering
   private Tilemap savedTilemap;
@@ -47,25 +45,25 @@ public class GridManager : MonoBehaviour {
     }
 
     // MODIFY TILES WITH MOUSE
-    if (!GameManager.Instance.simulationRunning) {
+    if (GameManager.Instance.gameState == GameManager.GameState.Paused) {
 
-      if (Input.GetMouseButtonDown(0))
-        btnDownAlive = true;
-      else if (Input.GetMouseButtonUp(0))
-        btnDownAlive = false;
-      else if (Input.GetMouseButtonDown(1))
-        btnDownEmpty = true;
-      else if (Input.GetMouseButtonUp(1))
-        btnDownEmpty = false;
+      // if (Input.GetMouseButtonDown(0))
+      //   btnDownAlive = true;
+      // else if (Input.GetMouseButtonUp(0))
+      //   btnDownAlive = false;
+      // if (Input.GetMouseButtonDown(1))
+      //   btnDownEmpty = true;
+      // else if (Input.GetMouseButtonUp(1))
+      //   btnDownEmpty = false;
 
       mouseTilemapPos = GetMouseTilePos();
       
       if (tilemap.cellBounds.Contains(mouseTilemapPos)) {
-        if (btnDownAlive) {
+        if (Input.GetMouseButton(0)) {
           // tileTemp.gameObject.SetActive(false); // hide mouse hover tile while painting
           tilemap.SetTile(mouseTilemapPos, tileAlive);
         }
-        else if (btnDownEmpty) {
+        else if (Input.GetMouseButton(1)) {
           // tileTemp.gameObject.SetActive(false); // hide mouse hover tile while painting
           tilemap.SetTile(mouseTilemapPos, tileEmpty);
         }
@@ -114,9 +112,8 @@ public class GridManager : MonoBehaviour {
 
   public void ClearGrid() {
     Debug.Log("Clearing grid...");
-    GameManager.Instance.SimStop();
+    GameManager.Instance.SimReset();
     tilemap.ClearAllTiles();
-    GameManager.Instance.generation = 0;
   }
 
   public void RecalculateGridBounds() {
@@ -128,7 +125,7 @@ public class GridManager : MonoBehaviour {
 
   public void Randomize() {
     Debug.Log("Randomizing grid...");
-    GameManager.Instance.SimStop();
+    GameManager.Instance.SimReset();
     RecalculateGridBounds();
     Vector3Int pos = new Vector3Int();
     float randomFloat;
@@ -161,7 +158,7 @@ public class GridManager : MonoBehaviour {
 
   public void RestoreLayout() {
     Debug.Log("Restoring grid to previous state...");
-    GameManager.Instance.SimStop();
+    GameManager.Instance.SimReset();
     RestoreTilemap();
     SetCameraFOV();
   }
@@ -181,8 +178,7 @@ public class GridManager : MonoBehaviour {
     // System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();  // to check time function takes to run
     // stopwatch.Start();
 
-      GameManager.Instance.generation++;
-      Debug.Log("***** SIMULATING GENERATION " + GameManager.Instance.generation);
+      GameManager.Instance.GenerationIncrement();
       Tile getTile = ScriptableObject.CreateInstance<Tile>();
       Vector3Int pos = new Vector3Int();
       int aliveNeighbors = 0;
