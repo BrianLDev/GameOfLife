@@ -26,8 +26,8 @@ public class GameManager : MonoBehaviour {
             menuToggler = GameObject.Find("Menu Toggler");
         if (!gridManager)
             gridManager = GameObject.FindObjectOfType<GridManager>();
-        if (textUIGen)
-            textUIGen = Text.FindObjectOfType<Text>();
+        if (!textUIGen)
+            Debug.LogError("Error: need to connect UI Text for generation status to the GameManager");
     }
 
     private void Start() {
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour {
             SimStep();
 
         // UPDATE UI
-        textUIGen.text = "Gen: " + generation;
+        UpdateUIText();
     }
 
 
@@ -89,6 +89,11 @@ public class GameManager : MonoBehaviour {
 
     public void GenerationIncrement() {
         generation++;
+        UpdateUIText();
+    }
+
+    public void UpdateUIText() {
+        textUIGen.text = "Gen: " + generation;
     }
 
     public void ToggleUI() {
